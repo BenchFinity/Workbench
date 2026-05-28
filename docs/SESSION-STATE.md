@@ -30,6 +30,7 @@ V1 implementation is complete and the audit follow-up is closed. The codebase is
 - Export orchestration is centralized in `createExportBlob.ts`, with connector-key 3MF object creation isolated in `connectorKeyObjects.ts`.
 - 3MF export internals are split into focused `threeMf/` modules for package assembly, mesh conversion, placement, core XML, Bambu metadata, shared formatting, constants, and types.
 - README architecture notes document the main module boundaries.
+- Root `AGENTS.md` and `docs/AGENT-HANDOFF.md` document agent startup context, validation rules, architecture boundaries, and next-phase handoff notes.
 - Unit/export tests, including Bambu-style 3MF package structure and a manifold edge regression for generated tile meshes.
 - Regression coverage confirms open-bottom split tiles keep connector pads aligned with the underside notches.
 - `docs/WORKBENCH-VNEXT.md` captures the QQQ/Postgres-backed account, project, and workbench direction for the next version.

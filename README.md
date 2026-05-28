@@ -19,6 +19,14 @@ npm run build
 - `src/export/` owns file creation. `createExportBlob.ts` selects STL, ZIP, or 3MF; `bundle.ts` writes split ZIPs; `stl.ts` writes binary STL; `threeMf/` contains focused 3MF package, mesh, placement, XML, and Bambu metadata modules.
 - `src/printers.ts` owns printer presets and grouping for UI selectors.
 
+## Agent Handoff
+
+- `AGENTS.md` contains repo-specific agent instructions.
+- `docs/SESSION-STATE.md` records current implementation status and validation notes.
+- `docs/AGENT-HANDOFF.md` summarizes the current ground truth and next best work.
+- `docs/WORKBENCH-VNEXT.md` is the requirements/design source for the next large expansion.
+- `docs/TODO.md` tracks completed V1 work and next-phase tasks.
+
 ## V1 Scope
 
 - Exact finished envelope with centered Gridfinity cells and solid perimeter padding.
