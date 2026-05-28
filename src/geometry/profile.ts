@@ -1,0 +1,17 @@
+export const GRIDFINITY_PROFILE = {
+  name: "Tracefinity standard Gridfinity",
+  tracefinityRelease: "0.4.0",
+  tracefinityReleaseDate: "2026-05-26",
+  defaultCellSizeMm: 42,
+  totalHeightMm: 5,
+  baseHeightMm: 2.2,
+  socketOpeningMm: 37.8,
+  socketCornerRadiusMm: 4,
+  magnetDiameterMm: 6.2,
+  magnetOffsetMm: 13.5,
+  connectorSlotWidthMm: 2,
+  connectorSlotLengthMm: 18,
+  connectorKeyWidthMm: 4,
+  connectorKeyDepthMm: 18,
+  connectorKeyHeightMm: 1.8,
+};
