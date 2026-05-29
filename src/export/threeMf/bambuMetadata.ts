@@ -1,4 +1,4 @@
-import { bambuStudioApplication } from "./constants";
+import { BAMBU_STUDIO_APPLICATION } from "./constants";
 import { escapeXml, formatTranslationTransform } from "./format";
 import type { ThreeMfObject } from "./types";
 
@@ -36,7 +36,7 @@ export function createBambuSliceInfoXml(): string {
     "<config>",
     "  <header>",
     '    <header_item key="X-BBL-Client-Type" value="slicer"/>',
-    `    <header_item key="X-BBL-Client-Version" value="${bambuStudioApplication.replace("BambuStudio-", "")}"/>`,
+    `    <header_item key="X-BBL-Client-Version" value="${BAMBU_STUDIO_APPLICATION.replace("BambuStudio-", "")}"/>`,
     "  </header>",
     "</config>",
     "",

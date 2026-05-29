@@ -1,5 +1,5 @@
 import type { GeometryPart } from "../../geometry/types";
-import { fallbackPlateColumns, fallbackPlateGapMm } from "./constants";
+import { FALLBACK_PLATE_COLUMNS, FALLBACK_PLATE_GAP_MM } from "./constants";
 import { geometryBounds } from "./mesh";
 import type { VectorLike } from "./types";
 
@@ -41,11 +41,11 @@ function createPlateOrigin(
 ): { x: number; y: number } {
   const plateWidth = Number.isFinite(plateWidthMm) ? (plateWidthMm ?? 0) : 0;
   const plateDepth = Number.isFinite(plateDepthMm) ? (plateDepthMm ?? 0) : 0;
-  const column = plateIndex % fallbackPlateColumns;
-  const row = Math.floor(plateIndex / fallbackPlateColumns);
+  const column = plateIndex % FALLBACK_PLATE_COLUMNS;
+  const row = Math.floor(plateIndex / FALLBACK_PLATE_COLUMNS);
 
   return {
-    x: column * (plateWidth + fallbackPlateGapMm),
-    y: -row * (plateDepth + fallbackPlateGapMm),
+    x: column * (plateWidth + FALLBACK_PLATE_GAP_MM),
+    y: -row * (plateDepth + FALLBACK_PLATE_GAP_MM),
   };
 }
