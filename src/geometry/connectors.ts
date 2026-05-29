@@ -13,6 +13,8 @@ export type ConnectorKeyLayout = {
   rows: number;
 };
 
+// At most one connector key per ~96mm of split edge: a cadence chosen for key
+// strength and print economy, not tied to the 42mm Gridfinity cell pitch.
 const CONNECTOR_EDGE_INTERVAL_MM = 96;
 const CONNECTOR_KEY_MARGIN_MM = 20;
 const CONNECTOR_KEY_SPACING_MM = 24;

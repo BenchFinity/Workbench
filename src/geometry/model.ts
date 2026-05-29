@@ -537,6 +537,9 @@ function extrudeShell(
     steps: 1,
   });
   geometry.translate(0, 0, zOffset);
+  // Stacked shells (base, socket, connector layers) share their touching faces, so
+  // drop the requested flat caps; the unioned mesh then stays manifold, with every
+  // edge shared by exactly two triangles.
   return filterTriangles(geometry, (triangle) => {
     const allAtBottom = triangle.every((vertex) => isSameCoordinate(vertex.z, zOffset));
     const allAtTop = triangle.every((vertex) => isSameCoordinate(vertex.z, zOffset + depth));

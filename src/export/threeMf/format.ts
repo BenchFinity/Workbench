@@ -9,6 +9,8 @@ export function formatNumber(value: number): string {
     throw new Error(`Cannot write non-finite coordinate ${value} to 3MF.`);
   }
 
+  // Values below half the 6-decimal rounding step snap to 0, so coordinates that
+  // would print as "-0" or rounding noise emit a clean 0 in the 3MF.
   const normalized = Math.abs(value) < 0.0000005 ? 0 : value;
   return Number(normalized.toFixed(6)).toString();
 }

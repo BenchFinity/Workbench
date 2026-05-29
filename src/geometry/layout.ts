@@ -154,6 +154,8 @@ function findBestSplit(
       const imbalance = segmentImbalance(colSegments) + segmentImbalance(rowSegments);
       const envelopeWaste =
         tiles.reduce((sum, tile) => sum + tile.widthMm * tile.depthMm, 0) - targetWidthMm * targetDepthMm;
+      // Order candidates lexically: fewest tiles first, then least segment imbalance,
+      // then least envelope waste. The large weights keep each tier ahead of the next.
       const score = tileCount * 100_000 + imbalance * 1_000 + envelopeWaste;
 
       if (!best || score < best.score) {

@@ -17,6 +17,8 @@ export const JSON_CONTENT_TYPE = "application/json";
 
 export const DEFAULT_OBJECT_NAME = "benchfinity-baseplate";
 export const BAMBU_STUDIO_APPLICATION = "BambuStudio-02.06.00.51";
+// Bambu Studio assembly identify_ids are the object id offset by this base.
+export const BAMBU_IDENTIFY_ID_BASE = 1000;
 export const GENERATOR_APPLICATION = "Benchfinity";
 export const FALLBACK_PLATE_GAP_MM = 40;
 export const FALLBACK_PLATE_COLUMNS = 3;

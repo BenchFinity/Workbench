@@ -1,4 +1,4 @@
-import { BAMBU_STUDIO_APPLICATION } from "./constants";
+import { BAMBU_IDENTIFY_ID_BASE, BAMBU_STUDIO_APPLICATION } from "./constants";
 import { escapeXml, formatTranslationTransform } from "./format";
 import type { ThreeMfObject } from "./types";
 
@@ -67,7 +67,7 @@ function createBambuPlateXml(objects: ThreeMfObject[]): string[] {
       `    <model_instance>`,
       `      <metadata key="object_id" value="${object.componentObjectId}"/>`,
       `      <metadata key="instance_id" value="0"/>`,
-      `      <metadata key="identify_id" value="${1000 + object.id}"/>`,
+      `      <metadata key="identify_id" value="${BAMBU_IDENTIFY_ID_BASE + object.id}"/>`,
       `    </model_instance>`,
     ]),
     `  </plate>`,

@@ -92,6 +92,8 @@ function appendGeometry(
     b.fromBufferAttribute(position, ib).applyMatrix4(transform);
     c.fromBufferAttribute(position, ic).applyMatrix4(transform);
 
+    // Drop degenerate (near-zero-area) triangles: a collapsed face would add a
+    // non-manifold edge that 3MF slicers reject.
     if (ab.subVectors(b, a).cross(ac.subVectors(c, a)).lengthSq() <= areaEpsilon) {
       return;
     }
