@@ -70,8 +70,16 @@ export function PlateControls({
       <fieldset>
         <legend>Finished Size</legend>
         <div className="two-col">
-          <NumberField label="Width" value={input.finishedWidth} onChange={(finishedWidth) => onInputChange({ finishedWidth })} />
-          <NumberField label="Depth" value={input.finishedDepth} onChange={(finishedDepth) => onInputChange({ finishedDepth })} />
+          <NumberField
+            label="Width"
+            value={input.finishedWidth}
+            onChange={(finishedWidth) => onInputChange({ finishedWidth })}
+          />
+          <NumberField
+            label="Depth"
+            value={input.finishedDepth}
+            onChange={(finishedDepth) => onInputChange({ finishedDepth })}
+          />
         </div>
         <UnitSegment value={input.finishedUnit} onChange={(finishedUnit) => onInputChange({ finishedUnit })} />
       </fieldset>
@@ -94,16 +102,40 @@ export function PlateControls({
           </select>
         </label>
         <div className="two-col">
-          <NumberField label="Width" value={input.bedWidth} disabled={!isCustomPrinter} onChange={(bedWidth) => onInputChange({ bedWidth })} />
-          <NumberField label="Depth" value={input.bedDepth} disabled={!isCustomPrinter} onChange={(bedDepth) => onInputChange({ bedDepth })} />
+          <NumberField
+            label="Width"
+            value={input.bedWidth}
+            disabled={!isCustomPrinter}
+            onChange={(bedWidth) => onInputChange({ bedWidth })}
+          />
+          <NumberField
+            label="Depth"
+            value={input.bedDepth}
+            disabled={!isCustomPrinter}
+            onChange={(bedDepth) => onInputChange({ bedDepth })}
+          />
         </div>
-        <UnitSegment value={input.bedUnit} disabled={!isCustomPrinter} onChange={(bedUnit) => onInputChange({ bedUnit })} />
-        <NumberField label="Print margin, mm" value={input.printMarginMm} step={0.5} onChange={(printMarginMm) => onInputChange({ printMarginMm })} />
+        <UnitSegment
+          value={input.bedUnit}
+          disabled={!isCustomPrinter}
+          onChange={(bedUnit) => onInputChange({ bedUnit })}
+        />
+        <NumberField
+          label="Print margin, mm"
+          value={input.printMarginMm}
+          step={0.5}
+          onChange={(printMarginMm) => onInputChange({ printMarginMm })}
+        />
       </fieldset>
 
       <fieldset>
         <legend>Gridfinity</legend>
-        <NumberField label="Cell pitch, mm" value={input.cellSizeMm} step={0.5} onChange={(cellSizeMm) => onInputChange({ cellSizeMm })} />
+        <NumberField
+          label="Cell pitch, mm"
+          value={input.cellSizeMm}
+          step={0.5}
+          onChange={(cellSizeMm) => onInputChange({ cellSizeMm })}
+        />
         <label className="toggle-row">
           <input
             type="checkbox"
@@ -130,7 +162,10 @@ export function PlateControls({
         <SummaryRow label="Grid" value={`${layout.cols} x ${layout.rows}`} />
         <SummaryRow label="Finished" value={`${formatMm(layout.targetWidthMm)} x ${formatMm(layout.targetDepthMm)}`} />
         <SummaryRow label="Grid area" value={`${formatMm(layout.gridWidthMm)} x ${formatMm(layout.gridDepthMm)}`} />
-        <SummaryRow label="Padding" value={`${formatMm(layout.paddingMm.left)} / ${formatMm(layout.paddingMm.front)}`} />
+        <SummaryRow
+          label="Padding"
+          value={`${formatMm(layout.paddingMm.left)} / ${formatMm(layout.paddingMm.front)}`}
+        />
         <SummaryRow label="Tiles" value={`${layout.tiles.length}`} />
       </section>
 

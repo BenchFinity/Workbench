@@ -85,7 +85,12 @@ function createOpenBottomParts(tile: TileSpec, cellSizeMm: number, connectorSlot
   ];
 }
 
-function createBaseParts(tile: TileSpec, cellSizeMm: number, includeMagnets: boolean, connectorSlots: ConnectorSlot[]): GeometryPart[] {
+function createBaseParts(
+  tile: TileSpec,
+  cellSizeMm: number,
+  includeMagnets: boolean,
+  connectorSlots: ConnectorSlot[],
+): GeometryPart[] {
   if (connectorSlots.length === 0) {
     return [
       {
@@ -108,15 +113,26 @@ function createBaseParts(tile: TileSpec, cellSizeMm: number, includeMagnets: boo
   ];
 }
 
-function createBaseShape(tile: TileSpec, cellSizeMm: number, includeMagnets: boolean, connectorSlots: ConnectorSlot[] = []): Shape {
-  const shape = connectorSlots.length > 0
-    ? createSegmentedRectangleShape(tile.widthMm, tile.depthMm, connectorSlots)
-    : rectangleShape(tile.widthMm, tile.depthMm);
+function createBaseShape(
+  tile: TileSpec,
+  cellSizeMm: number,
+  includeMagnets: boolean,
+  connectorSlots: ConnectorSlot[] = [],
+): Shape {
+  const shape =
+    connectorSlots.length > 0
+      ? createSegmentedRectangleShape(tile.widthMm, tile.depthMm, connectorSlots)
+      : rectangleShape(tile.widthMm, tile.depthMm);
   addMagnetHoles(shape, tile, cellSizeMm, includeMagnets);
   return shape;
 }
 
-function createNotchedBaseShape(tile: TileSpec, cellSizeMm: number, includeMagnets: boolean, connectorSlots: ConnectorSlot[]): Shape {
+function createNotchedBaseShape(
+  tile: TileSpec,
+  cellSizeMm: number,
+  includeMagnets: boolean,
+  connectorSlots: ConnectorSlot[],
+): Shape {
   const shape = createNotchedRectangleShape(tile.widthMm, tile.depthMm, connectorSlots);
   addMagnetHoles(shape, tile, cellSizeMm, includeMagnets);
   return shape;
@@ -170,14 +186,23 @@ function createBaseUpperShellGeometry(
 function createConnectorCeilingParts(tile: TileSpec, connectorSlots: ConnectorSlot[]): GeometryPart[] {
   return connectorSlots.map((slot, index) => ({
     name: `${tile.id}-connector-ceiling-${index + 1}`,
-    geometry: createPlanarGeometry(createShapeFromPath(createConnectorSlotPath(slot)), GRIDFINITY_PROFILE.connectorKeyHeightMm, "down"),
+    geometry: createPlanarGeometry(
+      createShapeFromPath(createConnectorSlotPath(slot)),
+      GRIDFINITY_PROFILE.connectorKeyHeightMm,
+      "down",
+    ),
   }));
 }
 
-function createSocketShellGeometry(tile: TileSpec, cellSizeMm: number, connectorSlots: ConnectorSlot[]): BufferGeometry {
-  const shape = connectorSlots.length > 0
-    ? createSegmentedRectangleShape(tile.widthMm, tile.depthMm, connectorSlots)
-    : rectangleShape(tile.widthMm, tile.depthMm);
+function createSocketShellGeometry(
+  tile: TileSpec,
+  cellSizeMm: number,
+  connectorSlots: ConnectorSlot[],
+): BufferGeometry {
+  const shape =
+    connectorSlots.length > 0
+      ? createSegmentedRectangleShape(tile.widthMm, tile.depthMm, connectorSlots)
+      : rectangleShape(tile.widthMm, tile.depthMm);
 
   addSocketOpenings(shape, tile, cellSizeMm);
 
@@ -194,12 +219,20 @@ function createOpenBottomFrameGeometry(tile: TileSpec, cellSizeMm: number): Buff
   return extrudeShell(shape, GRIDFINITY_PROFILE.totalHeightMm, 0, {});
 }
 
-function createOpenBottomBottomGeometry(tile: TileSpec, cellSizeMm: number, connectorSlots: ConnectorSlot[]): BufferGeometry {
+function createOpenBottomBottomGeometry(
+  tile: TileSpec,
+  cellSizeMm: number,
+  connectorSlots: ConnectorSlot[],
+): BufferGeometry {
   const shape = createOpenBottomShape(tile, cellSizeMm, connectorSlots, true, true);
   return extrudeShell(shape, GRIDFINITY_PROFILE.connectorKeyHeightMm, 0, { removeTop: true });
 }
 
-function createOpenBottomUpperGeometry(tile: TileSpec, cellSizeMm: number, connectorSlots: ConnectorSlot[]): BufferGeometry {
+function createOpenBottomUpperGeometry(
+  tile: TileSpec,
+  cellSizeMm: number,
+  connectorSlots: ConnectorSlot[],
+): BufferGeometry {
   const shape = createOpenBottomShape(tile, cellSizeMm, connectorSlots);
   return extrudeShell(
     shape,
@@ -222,13 +255,7 @@ function createOpenBottomShape(
       : notchConnectors
         ? createNotchedRectangleShape(tile.widthMm, tile.depthMm, connectorSlots)
         : createSegmentedRectangleShape(tile.widthMm, tile.depthMm, connectorSlots);
-  addSocketOpenings(
-    shape,
-    tile,
-    cellSizeMm,
-    keepConnectorCellsSolid ? connectorSlots : [],
-    cellSizeMm,
-  );
+  addSocketOpenings(shape, tile, cellSizeMm, keepConnectorCellsSolid ? connectorSlots : [], cellSizeMm);
   return shape;
 }
 
@@ -248,7 +275,11 @@ function addSocketOpenings(
   });
 }
 
-function createConnectorPadFloorParts(tile: TileSpec, cellSizeMm: number, connectorSlots: ConnectorSlot[]): GeometryPart[] {
+function createConnectorPadFloorParts(
+  tile: TileSpec,
+  cellSizeMm: number,
+  connectorSlots: ConnectorSlot[],
+): GeometryPart[] {
   const parts: GeometryPart[] = [];
 
   forEachCellCenter(tile, cellSizeMm, (centerX, centerY) => {
@@ -268,7 +299,12 @@ function createConnectorPadFloorParts(tile: TileSpec, cellSizeMm: number, connec
   return parts;
 }
 
-function isConnectorCell(centerX: number, centerY: number, connectorSlots: ConnectorSlot[], cellSizeMm: number): boolean {
+function isConnectorCell(
+  centerX: number,
+  centerY: number,
+  connectorSlots: ConnectorSlot[],
+  cellSizeMm: number,
+): boolean {
   return connectorSlots.some((slot) => {
     const verticalSlot = slot.width < slot.depth;
 
@@ -328,10 +364,7 @@ function createConnectorSlots(tile: TileSpec, cellSizeMm: number): ConnectorSlot
 
     positions.forEach((position) => {
       if (isVertical) {
-        const x =
-          edge === "left"
-            ? 0
-            : tile.widthMm - GRIDFINITY_PROFILE.connectorSlotWidthMm;
+        const x = edge === "left" ? 0 : tile.widthMm - GRIDFINITY_PROFILE.connectorSlotWidthMm;
         slots.push({
           x,
           y: position - GRIDFINITY_PROFILE.connectorSlotLengthMm / 2,
@@ -339,10 +372,7 @@ function createConnectorSlots(tile: TileSpec, cellSizeMm: number): ConnectorSlot
           depth: GRIDFINITY_PROFILE.connectorSlotLengthMm,
         });
       } else {
-        const y =
-          edge === "front"
-            ? 0
-            : tile.depthMm - GRIDFINITY_PROFILE.connectorSlotWidthMm;
+        const y = edge === "front" ? 0 : tile.depthMm - GRIDFINITY_PROFILE.connectorSlotWidthMm;
         slots.push({
           x: position - GRIDFINITY_PROFILE.connectorSlotLengthMm / 2,
           y,
@@ -354,11 +384,7 @@ function createConnectorSlots(tile: TileSpec, cellSizeMm: number): ConnectorSlot
   });
 
   return slots.filter(
-    (slot) =>
-      slot.x >= 0 &&
-      slot.y >= 0 &&
-      slot.x + slot.width <= tile.widthMm &&
-      slot.y + slot.depth <= tile.depthMm,
+    (slot) => slot.x >= 0 && slot.y >= 0 && slot.x + slot.width <= tile.widthMm && slot.y + slot.depth <= tile.depthMm,
   );
 }
 
@@ -368,9 +394,7 @@ function distributeCellIndexes(cellCount: number, count: number): number[] {
   }
 
   return Array.from(
-    new Set(
-      Array.from({ length: count }, (_, index) => Math.round((index + 0.5) * (cellCount / count) - 0.5)),
-    ),
+    new Set(Array.from({ length: count }, (_, index) => Math.round((index + 0.5) * (cellCount / count) - 0.5))),
   );
 }
 
@@ -452,7 +476,11 @@ function createSegmentedRectangleShape(width: number, depth: number, slots: Conn
   return shape;
 }
 
-function forEachCellCenter(tile: TileSpec, cellSizeMm: number, callback: (centerX: number, centerY: number) => void): void {
+function forEachCellCenter(
+  tile: TileSpec,
+  cellSizeMm: number,
+  callback: (centerX: number, centerY: number) => void,
+): void {
   for (let col = 0; col < tile.colCount; col += 1) {
     for (let row = 0; row < tile.rowCount; row += 1) {
       callback(

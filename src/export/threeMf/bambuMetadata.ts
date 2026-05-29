@@ -45,7 +45,12 @@ export function createBambuSliceInfoXml(): string {
 
 export function createBambuFilamentSequenceJson(objects: ThreeMfObject[]): string {
   return JSON.stringify(
-    Object.fromEntries(Array.from(groupObjectsByPlate(objects).keys()).map((plateIndex) => [`plate_${plateIndex + 1}`, { sequence: [] }])),
+    Object.fromEntries(
+      Array.from(groupObjectsByPlate(objects).keys()).map((plateIndex) => [
+        `plate_${plateIndex + 1}`,
+        { sequence: [] },
+      ]),
+    ),
   );
 }
 

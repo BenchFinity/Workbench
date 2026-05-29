@@ -44,11 +44,9 @@ export function createPackageRelationshipsXml(): string {
 }
 
 export function createModelRelationshipsXml(): string {
-  return [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    `<Relationships xmlns="${relationshipsNamespace}"/>`,
-    "",
-  ].join("\n");
+  return ['<?xml version="1.0" encoding="UTF-8"?>', `<Relationships xmlns="${relationshipsNamespace}"/>`, ""].join(
+    "\n",
+  );
 }
 
 export function createModelXml(objects: ThreeMfObject[], options: ThreeMfPackageOptions): string {
@@ -76,7 +74,9 @@ export function createModelXml(objects: ThreeMfObject[], options: ThreeMfPackage
     `  </build>`,
     `</model>`,
     "",
-  ].filter((line): line is string => line !== undefined).join("\n");
+  ]
+    .filter((line): line is string => line !== undefined)
+    .join("\n");
 }
 
 function createResourceObjectXml(object: ThreeMfObject): string[] {

@@ -1,12 +1,15 @@
 # Session State
 
 ## Current Branch
+
 `feature/9-public-repo-ci`
 
 ## Status
+
 V1 implementation is complete and the audit follow-up is closed. The repository now uses `develop` as the default branch, and Workbench VNext work is tracked in GitHub Issues under the `Workbench VNext` milestone and the `Benchfinity Roadmap` project. Repository foundation work is tracked in GitHub Issue #9.
 
 ## Implemented
+
 - Benchfinity Vite, React, TypeScript app scaffold.
 - Project name input used in filenames and export metadata.
 - Footer shows the Benchfinity name and a link to benchfinity.com.
@@ -38,6 +41,7 @@ V1 implementation is complete and the audit follow-up is closed. The repository 
 - GitHub Issue #9 tracks public repository setup, Docker packaging, CI, GHCR image publishing, and release automation.
 
 ## Verification
+
 - `npm run test` passes, 34 tests.
 - `npm run build` passes with a Vite chunk-size warning caused by Three.js dependencies.
 - `npm audit` reports 0 vulnerabilities after updating Vitest to 4.1.7.
@@ -47,6 +51,7 @@ V1 implementation is complete and the audit follow-up is closed. The repository 
 - Regression checks cover rotated single STL exports, rotated split ZIP STL exports, connector-key quantities, 3MF metadata content types, connector-key 3MF object placement, and connector-key plate validation.
 
 ## GitHub Workflow
+
 - Default branch: `develop`.
 - Active feature branch: `feature/9-public-repo-ci`.
 - Work issue: #9, `Prepare public repo, container CI, and releases`.

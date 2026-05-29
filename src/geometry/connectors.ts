@@ -51,7 +51,10 @@ export function planConnectorKeyLayout({
     };
   }
 
-  const columns = Math.max(1, Math.floor((bedWidthMm - connectorKeyMarginMm * 2 - keyWidthMm) / connectorKeySpacingMm) + 1);
+  const columns = Math.max(
+    1,
+    Math.floor((bedWidthMm - connectorKeyMarginMm * 2 - keyWidthMm) / connectorKeySpacingMm) + 1,
+  );
   const rows = Math.ceil(count / columns);
   const placements = Array.from({ length: count }, (_, index) => ({
     x: connectorKeyMarginMm + (index % columns) * connectorKeySpacingMm,

@@ -11,10 +11,7 @@ export type ExportValidation = {
 const MAX_PROJECT_NAME_LENGTH = 80;
 
 export function validateExport(input: PlateInput, layout: PlateLayout): ExportValidation {
-  const errors = [
-    ...validateProjectName(input.projectName),
-    ...layout.errors,
-  ];
+  const errors = [...validateProjectName(input.projectName), ...layout.errors];
 
   if (layout.errors.length === 0 && layout.tiles.length === 0) {
     errors.push("No printable tiles were generated.");

@@ -18,11 +18,7 @@ import {
   createModelXml,
   createPackageRelationshipsXml,
 } from "./coreXml";
-import {
-  createBambuFilamentSequenceJson,
-  createBambuModelSettingsXml,
-  createBambuSliceInfoXml,
-} from "./bambuMetadata";
+import { createBambuFilamentSequenceJson, createBambuModelSettingsXml, createBambuSliceInfoXml } from "./bambuMetadata";
 import type { ThreeMfObject, ThreeMfObjectInput, ThreeMfPackageOptions } from "./types";
 
 export async function createThreeMfPackage(source: GeometryPart[], options?: ThreeMfPackageOptions): Promise<Blob>;
@@ -111,18 +107,19 @@ function createObject(input: ThreeMfObjectInput, index: number, options: ThreeMf
     throw new Error(`Cannot create 3MF object "${input.name}" without geometry parts.`);
   }
 
-  const placement = input.meshTranslationMm && input.buildTranslationMm
-    ? {
-        meshTranslationMm: input.meshTranslationMm,
-        buildTranslationMm: input.buildTranslationMm,
-      }
-    : createPlatePlacement(
-        input.parts,
-        options.plateWidthMm,
-        options.plateDepthMm,
-        undefined,
-        input.plateIndex ?? index,
-      );
+  const placement =
+    input.meshTranslationMm && input.buildTranslationMm
+      ? {
+          meshTranslationMm: input.meshTranslationMm,
+          buildTranslationMm: input.buildTranslationMm,
+        }
+      : createPlatePlacement(
+          input.parts,
+          options.plateWidthMm,
+          options.plateDepthMm,
+          undefined,
+          input.plateIndex ?? index,
+        );
   const mesh = createMesh(input.parts, placement.meshTranslationMm, input.rotationDeg ?? 0);
 
   if (mesh.triangles.length === 0) {

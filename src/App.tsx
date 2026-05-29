@@ -116,7 +116,12 @@ export function App() {
     setStatus(null);
 
     try {
-      const exportFilename = buildExportFilename(input.projectName, layout.cols, layout.rows, exportFileExtension(format, models));
+      const exportFilename = buildExportFilename(
+        input.projectName,
+        layout.cols,
+        layout.rows,
+        exportFileExtension(format, models),
+      );
       const blob = await createExportBlob({
         format,
         input,

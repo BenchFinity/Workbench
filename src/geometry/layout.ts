@@ -102,7 +102,16 @@ export function deriveLayout(input: PlateInput): PlateLayout {
     warnings.push("Magnet pockets are skipped in open-bottom mode.");
   }
 
-  const split = findBestSplit(cols, rows, paddingMm, targetWidthMm, targetDepthMm, printableWidthMm, printableDepthMm, cellSizeMm);
+  const split = findBestSplit(
+    cols,
+    rows,
+    paddingMm,
+    targetWidthMm,
+    targetDepthMm,
+    printableWidthMm,
+    printableDepthMm,
+    cellSizeMm,
+  );
 
   if (!split) {
     errors.push("No valid split fits inside the printable bed area.");
@@ -143,7 +152,8 @@ function findBestSplit(
 
       const tileCount = colSegmentCount * rowSegmentCount;
       const imbalance = segmentImbalance(colSegments) + segmentImbalance(rowSegments);
-      const envelopeWaste = tiles.reduce((sum, tile) => sum + tile.widthMm * tile.depthMm, 0) - targetWidthMm * targetDepthMm;
+      const envelopeWaste =
+        tiles.reduce((sum, tile) => sum + tile.widthMm * tile.depthMm, 0) - targetWidthMm * targetDepthMm;
       const score = tileCount * 100_000 + imbalance * 1_000 + envelopeWaste;
 
       if (!best || score < best.score) {
@@ -155,7 +165,12 @@ function findBestSplit(
   return best;
 }
 
-function buildTiles(colSegments: number[], rowSegments: number[], padding: EdgePadding, cellSizeMm: number): TileSpec[] {
+function buildTiles(
+  colSegments: number[],
+  rowSegments: number[],
+  padding: EdgePadding,
+  cellSizeMm: number,
+): TileSpec[] {
   const tiles: TileSpec[] = [];
   let rowStart = 0;
   let originY = 0;
@@ -222,7 +237,12 @@ function assignRotation(tile: TileSpec, printableWidthMm: number, printableDepth
   return false;
 }
 
-function getSplitEdges(colIndex: number, rowIndex: number, colSegmentCount: number, rowSegmentCount: number): SplitEdge[] {
+function getSplitEdges(
+  colIndex: number,
+  rowIndex: number,
+  colSegmentCount: number,
+  rowSegmentCount: number,
+): SplitEdge[] {
   const edges: SplitEdge[] = [];
 
   if (colIndex > 0) {

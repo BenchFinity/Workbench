@@ -79,7 +79,8 @@ export function normalizeDefaults(value: unknown): AppDefaults {
       bedUnit: unitValue(input.bedUnit, FACTORY_DEFAULTS.input.bedUnit),
       cellSizeMm: numberValue(input.cellSizeMm, FACTORY_DEFAULTS.input.cellSizeMm),
       printMarginMm: numberValue(input.printMarginMm, FACTORY_DEFAULTS.input.printMarginMm),
-      includeMagnets: typeof input.includeMagnets === "boolean" ? input.includeMagnets : FACTORY_DEFAULTS.input.includeMagnets,
+      includeMagnets:
+        typeof input.includeMagnets === "boolean" ? input.includeMagnets : FACTORY_DEFAULTS.input.includeMagnets,
       openBottom: typeof input.openBottom === "boolean" ? input.openBottom : FACTORY_DEFAULTS.input.openBottom,
     },
   };

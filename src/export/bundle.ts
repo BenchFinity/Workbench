@@ -70,18 +70,19 @@ function createManifest(layout: PlateLayout, input: PlateInput) {
       splitEdges: tile.splitEdges,
       suggestedPrintRotationDeg: tile.rotationDeg,
     })),
-    connectors: keyCount > 0
-      ? {
-          filename: "connector-key.stl",
-          type: "edge-open underside spline key",
-          quantity: keyCount,
-          sizeMm: {
-            width: GRIDFINITY_PROFILE.connectorKeyWidthMm,
-            depth: GRIDFINITY_PROFILE.connectorKeyDepthMm,
-            height: GRIDFINITY_PROFILE.connectorKeyHeightMm,
-          },
-        }
-      : null,
+    connectors:
+      keyCount > 0
+        ? {
+            filename: "connector-key.stl",
+            type: "edge-open underside spline key",
+            quantity: keyCount,
+            sizeMm: {
+              width: GRIDFINITY_PROFILE.connectorKeyWidthMm,
+              depth: GRIDFINITY_PROFILE.connectorKeyDepthMm,
+              height: GRIDFINITY_PROFILE.connectorKeyHeightMm,
+            },
+          }
+        : null,
   };
 }
 

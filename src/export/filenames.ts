@@ -2,7 +2,12 @@ const FALLBACK_NAME = "benchfinity-baseplate";
 
 export type ExportExtension = "stl" | "zip" | "3mf";
 
-export function buildExportFilename(projectName: string, cols: number, rows: number, extension: ExportExtension): string {
+export function buildExportFilename(
+  projectName: string,
+  cols: number,
+  rows: number,
+  extension: ExportExtension,
+): string {
   const baseName = sanitizeFilenamePart(projectName);
 
   if (!baseName) {

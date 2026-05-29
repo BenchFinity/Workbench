@@ -67,16 +67,31 @@ export function SettingsDialog({
         <div className="settings-body">
           <fieldset>
             <legend>Project</legend>
-            <TextField label="Default name" value={draft.input.projectName} onChange={(projectName) => updateDraftInput({ projectName })} />
+            <TextField
+              label="Default name"
+              value={draft.input.projectName}
+              onChange={(projectName) => updateDraftInput({ projectName })}
+            />
           </fieldset>
 
           <fieldset>
             <legend>Finished Size</legend>
             <div className="two-col">
-              <NumberField label="Width" value={draft.input.finishedWidth} onChange={(finishedWidth) => updateDraftInput({ finishedWidth })} />
-              <NumberField label="Depth" value={draft.input.finishedDepth} onChange={(finishedDepth) => updateDraftInput({ finishedDepth })} />
+              <NumberField
+                label="Width"
+                value={draft.input.finishedWidth}
+                onChange={(finishedWidth) => updateDraftInput({ finishedWidth })}
+              />
+              <NumberField
+                label="Depth"
+                value={draft.input.finishedDepth}
+                onChange={(finishedDepth) => updateDraftInput({ finishedDepth })}
+              />
             </div>
-            <UnitSegment value={draft.input.finishedUnit} onChange={(finishedUnit) => updateDraftInput({ finishedUnit })} />
+            <UnitSegment
+              value={draft.input.finishedUnit}
+              onChange={(finishedUnit) => updateDraftInput({ finishedUnit })}
+            />
           </fieldset>
 
           <fieldset>
@@ -97,16 +112,40 @@ export function SettingsDialog({
               </select>
             </label>
             <div className="two-col">
-              <NumberField label="Width" value={draft.input.bedWidth} disabled={!isCustomPrinter} onChange={(bedWidth) => updateDraftInput({ bedWidth })} />
-              <NumberField label="Depth" value={draft.input.bedDepth} disabled={!isCustomPrinter} onChange={(bedDepth) => updateDraftInput({ bedDepth })} />
+              <NumberField
+                label="Width"
+                value={draft.input.bedWidth}
+                disabled={!isCustomPrinter}
+                onChange={(bedWidth) => updateDraftInput({ bedWidth })}
+              />
+              <NumberField
+                label="Depth"
+                value={draft.input.bedDepth}
+                disabled={!isCustomPrinter}
+                onChange={(bedDepth) => updateDraftInput({ bedDepth })}
+              />
             </div>
-            <UnitSegment value={draft.input.bedUnit} disabled={!isCustomPrinter} onChange={(bedUnit) => updateDraftInput({ bedUnit })} />
-            <NumberField label="Print margin, mm" value={draft.input.printMarginMm} step={0.5} onChange={(printMarginMm) => updateDraftInput({ printMarginMm })} />
+            <UnitSegment
+              value={draft.input.bedUnit}
+              disabled={!isCustomPrinter}
+              onChange={(bedUnit) => updateDraftInput({ bedUnit })}
+            />
+            <NumberField
+              label="Print margin, mm"
+              value={draft.input.printMarginMm}
+              step={0.5}
+              onChange={(printMarginMm) => updateDraftInput({ printMarginMm })}
+            />
           </fieldset>
 
           <fieldset>
             <legend>Gridfinity</legend>
-            <NumberField label="Cell pitch, mm" value={draft.input.cellSizeMm} step={0.5} onChange={(cellSizeMm) => updateDraftInput({ cellSizeMm })} />
+            <NumberField
+              label="Cell pitch, mm"
+              value={draft.input.cellSizeMm}
+              step={0.5}
+              onChange={(cellSizeMm) => updateDraftInput({ cellSizeMm })}
+            />
             <label className="toggle-row">
               <input
                 type="checkbox"
