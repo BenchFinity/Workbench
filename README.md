@@ -48,7 +48,7 @@ The production image serves the built Vite app on port `8080`. Published images 
 
 - Exact finished envelope with centered Gridfinity cells and solid perimeter padding.
 - Project name input used in exported filenames, manifest, and README.
-- KofTwentyTwo project footer.
+- Benchfinity footer linking to benchfinity.com.
 - Settings dialog for saved defaults in local storage.
 - Pre-export validation for project name, dimensions, margin, printable fit, and generated tiles.
 - Standard `42mm` Gridfinity pitch by default.

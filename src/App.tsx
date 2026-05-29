@@ -170,7 +170,11 @@ export function App() {
       </main>
       <footer className="app-footer">
         <span>Benchfinity</span>
-        <span>A KofTwentyTwo project</span>
+        <span>
+          <a href="https://www.benchfinity.com" target="_blank" rel="noreferrer">
+            benchfinity.com
+          </a>
+        </span>
       </footer>
       <SettingsDialog
         open={settingsOpen}

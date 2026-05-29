@@ -9,7 +9,7 @@ V1 implementation is complete and the audit follow-up is closed. The repository 
 ## Implemented
 - Benchfinity Vite, React, TypeScript app scaffold.
 - Project name input used in filenames and export metadata.
-- Footer identifies the app as a KofTwentyTwo project.
+- Footer shows the Benchfinity name and a link to benchfinity.com.
 - Settings dialog persists startup and reset defaults in browser local storage.
 - Pre-export validation blocks invalid project names, dimensions, margins, oversized grids, layouts without printable tiles, and connector-key plates that do not fit the selected bed.
 - Centered padded envelope sizing.
