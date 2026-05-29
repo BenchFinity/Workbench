@@ -38,4 +38,6 @@ Use `npm run dev` for local browser verification.
 
 ## Legal
 
-By contributing, you agree that your contribution is your original work, that you have the right to submit it, and that it can be distributed under this repository's license.
+Benchfinity is licensed under AGPL-3.0-only; contributions are accepted under the same license.
+
+This project uses the [Developer Certificate of Origin](https://developercertificate.org/): sign off each commit with `git commit -s` to certify it is your own work and may be distributed under the project license (and any commercial license the maintainers may also offer).
