@@ -1,0 +1,23 @@
+{{- if and .Values.frontend.enabled .Values.frontend.autoscaling.enabled }}
+{{- $component := "frontend" }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "benchfinity.componentName" (dict "context" . "component" $component) }}
+  labels:
+    {{- include "benchfinity.componentLabels" (dict "context" . "component" $component) | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "benchfinity.componentName" (dict "context" . "component" $component) }}
+  minReplicas: {{ .Values.frontend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.frontend.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.frontend.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}

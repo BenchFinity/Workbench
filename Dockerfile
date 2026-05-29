@@ -15,6 +15,7 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:1.27-alpine
 
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/security-headers.inc /etc/nginx/conf.d/security-headers.inc
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 8080
