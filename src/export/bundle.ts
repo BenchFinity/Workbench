@@ -1,4 +1,6 @@
 import JSZip from "jszip";
+import pkg from "../../package.json";
+import { formatMm } from "../displayFormat";
 import { connectorKeyCount } from "../geometry/connectors";
 import { GRIDFINITY_PROFILE } from "../geometry/profile";
 import { serializeBinaryStlBuffer } from "./stl";
@@ -34,7 +36,7 @@ function createManifest(layout: PlateLayout, input: PlateInput) {
 
   return {
     generator: "benchfinity",
-    version: "0.1.0",
+    version: pkg.version,
     projectName: input.projectName,
     printMode: input.openBottom ? "open-bottom lightweight" : "standard solid-bottom",
     compatibility: {
@@ -108,8 +110,4 @@ function createReadme(layout: PlateLayout, input: PlateInput): string {
   }
 
   return `${lines.join("\n")}\n`;
-}
-
-function formatMm(value: number): string {
-  return `${Number(value.toFixed(2))}mm`;
 }

@@ -13,10 +13,6 @@ export function formatNumber(value: number): string {
   return Number(normalized.toFixed(6)).toString();
 }
 
-export function escapeXmlAttribute(value: string): string {
-  return escapeXml(value);
-}
-
 export function escapeXml(value: string): string {
   return value.replace(/[<>&"']/g, (character) => {
     switch (character) {

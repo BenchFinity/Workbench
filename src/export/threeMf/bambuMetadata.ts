@@ -1,5 +1,5 @@
 import { bambuStudioApplication } from "./constants";
-import { escapeXmlAttribute, formatTranslationTransform } from "./format";
+import { escapeXml, formatTranslationTransform } from "./format";
 import type { ThreeMfObject } from "./types";
 
 export function createBambuModelSettingsXml(objects: ThreeMfObject[]): string {
@@ -8,11 +8,11 @@ export function createBambuModelSettingsXml(objects: ThreeMfObject[]): string {
     "<config>",
     ...objects.flatMap((object) => [
       `  <object id="${object.componentObjectId}">`,
-      `    <metadata key="name" value="${escapeXmlAttribute(object.name)}"/>`,
+      `    <metadata key="name" value="${escapeXml(object.name)}"/>`,
       `    <metadata key="extruder" value="1"/>`,
       `    <metadata face_count="${object.mesh.triangles.length}"/>`,
       `    <part id="${object.meshObjectId}" subtype="normal_part">`,
-      `      <metadata key="name" value="${escapeXmlAttribute(object.name)}"/>`,
+      `      <metadata key="name" value="${escapeXml(object.name)}"/>`,
       `      <metadata key="matrix" value="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"/>`,
       `      <metadata key="source_object_id" value="0"/>`,
       `      <metadata key="source_volume_id" value="0"/>`,
@@ -58,7 +58,7 @@ function createBambuPlateXml(objects: ThreeMfObject[]): string[] {
   return Array.from(groupObjectsByPlate(objects).entries()).flatMap(([plateIndex, plateObjects]) => [
     `  <plate>`,
     `    <metadata key="plater_id" value="${plateIndex + 1}"/>`,
-    `    <metadata key="plater_name" value="${escapeXmlAttribute(plateObjects[0].plateName)}"/>`,
+    `    <metadata key="plater_name" value="${escapeXml(plateObjects[0].plateName)}"/>`,
     `    <metadata key="locked" value="false"/>`,
     `    <metadata key="filament_map_mode" value="Auto For Flush"/>`,
     `    <metadata key="filament_maps" value="1 1 1 1"/>`,
