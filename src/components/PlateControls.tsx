@@ -6,6 +6,27 @@ import type { PlateInput, PlateLayout } from "../geometry/types";
 import { CUSTOM_PRINTER_ID, type PrinterGroup } from "../printers";
 import { NumberField, TextField, UnitSegment } from "./FormControls";
 
+export type PlateControlsProps = {
+  input: PlateInput;
+  layout: PlateLayout;
+  printerGroups: PrinterGroup[];
+  selectedPrinterId: string;
+  isCustomPrinter: boolean;
+  exploded: boolean;
+  canExport: boolean;
+  validationErrors: string[];
+  warnings: string[];
+  modelCount: number;
+  downloadInfo: DownloadInfo | null;
+  status: string | null;
+  onInputChange: (patch: Partial<PlateInput>) => void;
+  onPrinterChange: (printerId: string) => void;
+  onExplodedChange: (exploded: boolean) => void;
+  onOpenSettings: () => void;
+  onReset: () => void;
+  onExport: (format: ExportFormat) => void;
+};
+
 export function PlateControls({
   input,
   layout,
@@ -25,26 +46,7 @@ export function PlateControls({
   onOpenSettings,
   onReset,
   onExport,
-}: {
-  input: PlateInput;
-  layout: PlateLayout;
-  printerGroups: PrinterGroup[];
-  selectedPrinterId: string;
-  isCustomPrinter: boolean;
-  exploded: boolean;
-  canExport: boolean;
-  validationErrors: string[];
-  warnings: string[];
-  modelCount: number;
-  downloadInfo: DownloadInfo | null;
-  status: string | null;
-  onInputChange: (patch: Partial<PlateInput>) => void;
-  onPrinterChange: (printerId: string) => void;
-  onExplodedChange: (exploded: boolean) => void;
-  onOpenSettings: () => void;
-  onReset: () => void;
-  onExport: (format: ExportFormat) => void;
-}) {
+}: PlateControlsProps) {
   return (
     <section className="control-panel" aria-label="Plate controls">
       <div className="panel-header">

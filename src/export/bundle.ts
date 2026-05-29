@@ -88,6 +88,8 @@ function createManifest(layout: PlateLayout, input: PlateInput) {
   };
 }
 
+export type ExportManifest = ReturnType<typeof createManifest>;
+
 function createReadme(layout: PlateLayout, input: PlateInput): string {
   const keyCount = connectorKeyCount(layout);
   const lines = [

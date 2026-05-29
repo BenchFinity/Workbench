@@ -17,4 +17,6 @@ export const GRIDFINITY_PROFILE = {
   connectorKeyWidthMm: 4,
   connectorKeyDepthMm: 18,
   connectorKeyHeightMm: 1.8,
-};
+} as const;
+
+export type GridfinityProfile = typeof GRIDFINITY_PROFILE;
