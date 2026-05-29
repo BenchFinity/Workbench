@@ -1,14 +1,20 @@
-FROM node:22-alpine AS deps
+# glibc Node toolchain (Chainguard node:latest-dev: npm + shell, glibc, nonroot
+# uid 65532). Matches ADR 0001; replaces node:22-alpine (musl). Provides Node >=22
+# (currently 26.x) per package.json engines. Digest-pinned; refresh via Dependabot.
+FROM cgr.dev/chainguard/node:latest-dev@sha256:5f539ca9ce7ed8b858059b3316640232bcb1ae7d3513ae67bb95527533bf1fba AS deps
+# /app is the image's default WORKDIR and is owned/writable by the nonroot user.
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
 
-FROM node:22-alpine AS builder
+FROM cgr.dev/chainguard/node:latest-dev@sha256:5f539ca9ce7ed8b858059b3316640232bcb1ae7d3513ae67bb95527533bf1fba AS builder
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+# --chown so the nonroot build user can write into node_modules (tsc emits
+# .tmp/*.tsbuildinfo there); cross-stage COPY otherwise lands read-only for it.
+COPY --chown=node:node --from=deps /app/node_modules ./node_modules
+COPY --chown=node:node . .
 
 RUN npm run build
 
