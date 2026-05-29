@@ -70,4 +70,6 @@ The production image serves the built Vite app on port `8080`. Published images 
 
 ## License
 
-Benchfinity is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+Benchfinity is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0-only) — see [LICENSE](LICENSE). Running a modified version as a network service obligates you to offer its source to users (AGPL section 13). For commercial licensing without AGPL terms, contact the maintainers.
+
+Contributions are accepted under AGPL-3.0 via the Developer Certificate of Origin; sign off your commits with `git commit -s`. See [CONTRIBUTING](CONTRIBUTING.md).
