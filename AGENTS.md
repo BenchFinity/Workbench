@@ -2,9 +2,9 @@
 
 ## Project Context
 
-Benchfinity is a personal KofTwentyTwo project for generating Gridfinity-compatible baseplates, split print bundles, and Bambu Studio-style 3MF files. V1 is a local browser app. The next phase is the Workbench version with accounts, projects, saved designs, export history, and a QQQ/Postgres backend.
+Benchfinity is a BenchFinity project for generating Gridfinity-compatible baseplates, split print bundles, and Bambu Studio-style 3MF files. V1 is a local browser app. The next phase is the Workbench version with accounts, projects, saved designs, export history, and a QQQ/Postgres backend.
 
-No external issue ticket is required for this personal project unless James asks for one.
+Use GitHub Issues for new project work unless James explicitly asks to skip issue tracking.
 
 ## Required Startup Reads
 
