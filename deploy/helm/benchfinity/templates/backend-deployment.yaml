@@ -1,0 +1,72 @@
+{{- if .Values.backend.enabled }}
+{{- $component := "backend" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "benchfinity.componentName" (dict "context" . "component" $component) }}
+  labels:
+    {{- include "benchfinity.componentLabels" (dict "context" . "component" $component) | nindent 4 }}
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      {{- include "benchfinity.componentSelectorLabels" (dict "context" . "component" $component) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "benchfinity.componentLabels" (dict "context" . "component" $component) | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "benchfinity.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.backend.containerPort }}
+              protocol: TCP
+          env:
+            - name: DATABASE_HOST
+              value: {{ .Values.backend.database.host | quote }}
+            - name: DATABASE_PORT
+              value: {{ .Values.backend.database.port | quote }}
+            - name: DATABASE_NAME
+              value: {{ .Values.backend.database.name | quote }}
+            - name: DATABASE_USER
+              value: {{ .Values.backend.database.user | quote }}
+            {{- if .Values.backend.database.existingSecret }}
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backend.database.existingSecret }}
+                  key: {{ .Values.backend.database.existingSecretPasswordKey }}
+            {{- end }}
+            {{- if .Values.backend.objectStore.enabled }}
+            - name: OBJECT_STORE_ENDPOINT
+              value: {{ .Values.backend.objectStore.endpoint | quote }}
+            - name: OBJECT_STORE_BUCKET
+              value: {{ .Values.backend.objectStore.bucket | quote }}
+            {{- if .Values.backend.objectStore.existingSecret }}
+            - name: OBJECT_STORE_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backend.objectStore.existingSecret }}
+                  key: access-key
+            - name: OBJECT_STORE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backend.objectStore.existingSecret }}
+                  key: secret-key
+            {{- end }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+{{- end }}

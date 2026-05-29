@@ -1,0 +1,18 @@
+{{- if .Values.frontend.enabled }}
+{{- $component := "frontend" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "benchfinity.componentName" (dict "context" . "component" $component) }}
+  labels:
+    {{- include "benchfinity.componentLabels" (dict "context" . "component" $component) | nindent 4 }}
+spec:
+  type: {{ .Values.frontend.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.containerPort }}
+      protocol: TCP
+  selector:
+    {{- include "benchfinity.componentSelectorLabels" (dict "context" . "component" $component) | nindent 4 }}
+{{- end }}

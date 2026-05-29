@@ -1,0 +1,11 @@
+apiVersion: v2
+name: benchfinity
+description: Benchfinity Workbench - Gridfinity-compatible baseplate generator
+type: application
+# Chart version. Bumped independently of the application.
+version: 0.1.0
+# Version of the Benchfinity application this chart deploys by default.
+appVersion: "0.1.0"
+# No dependencies: Postgres and MinIO are expected to be provided by the
+# cluster (operators, managed services, or separate releases). The chart only
+# configures connections to them via backend.database / backend.objectStore.

@@ -1,0 +1,37 @@
+# EXAMPLE Argo CD Application for Benchfinity.
+#
+# This is a starting point, not a turnkey manifest. Before applying:
+#   - The GHCR image (and chart) are private. Give Argo CD / the target cluster
+#     pull access by configuring an imagePullSecret (set chart value
+#     imagePullSecrets) and, if syncing the chart from OCI, repo credentials.
+#   - Adjust repoURL, targetRevision, and destination to your environment.
+#
+# Argo CD Image Updater can track the rolling `:develop` snapshot tag. Add the
+# annotations below (and install the Image Updater) to auto-bump the frontend
+# image as new develop builds are pushed:
+#
+#   annotations:
+#     argocd-image-updater.argoproj.io/image-list: frontend=ghcr.io/benchfinity/workbench
+#     argocd-image-updater.argoproj.io/frontend.update-strategy: digest
+#     argocd-image-updater.argoproj.io/frontend.allow-tags: regexp:^develop$
+#     argocd-image-updater.argoproj.io/frontend.pull-secret: pullsecret:argocd/ghcr-pull
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: benchfinity
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BenchFinity/workbench.git
+    path: deploy/helm/benchfinity
+    targetRevision: develop
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: benchfinity
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
