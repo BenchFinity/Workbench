@@ -1,6 +1,11 @@
 # Benchfinity
 
-Browser app for generating Gridfinity-compatible workbench baseplates as STL, ZIP, and 3MF files.
+[![CI](https://github.com/BenchFinity/workbench/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/BenchFinity/workbench/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/BenchFinity/workbench)](LICENSE)
+
+Benchfinity is a browser app for generating Gridfinity-compatible workbench baseplates as STL, split ZIP bundles, and Bambu Studio-style 3MF files.
+
+The V1 app runs locally in the browser. The next Workbench phase adds accounts, projects, saved designs, export history, and a QQQ/Postgres backend.
 
 ## Commands
 
@@ -9,7 +14,19 @@ npm install
 npm run dev
 npm run test
 npm run build
+npm audit
 ```
+
+## Docker
+
+Benchfinity publishes container images to GitHub Container Registry.
+
+```bash
+docker build -t benchfinity-workbench .
+docker run --rm -p 8080:8080 benchfinity-workbench
+```
+
+The production image serves the built Vite app on port `8080`. Published images use `ghcr.io/benchfinity/workbench`.
 
 ## Architecture
 
@@ -42,3 +59,15 @@ npm run build
 - Printer bed presets grouped by brand, with Bambu Lab H2C left-nozzle selected by default and a `Custom` option for manual dimensions.
 - Edge-open underside connector notches with a separate connector key STL.
 - Bambu Studio-style 3MF export with one printable plate per generated tile, plus STL export for single plates and ZIP export for split plates.
+
+## Branch And Release Flow
+
+- `develop` is the default branch for integration work.
+- `feature/*` branches publish snapshot container images tagged with the sanitized branch name and short commit SHA.
+- `develop` publishes a snapshot image and the `develop` image tag.
+- `release/*` and `rc/*` branches publish RC images and prerelease GitHub Releases.
+- `main` publishes the clean package version image tag and a stable GitHub Release.
+
+## License
+
+Benchfinity is licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
