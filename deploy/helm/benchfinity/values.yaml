@@ -1,0 +1,99 @@
+# Default values for the Benchfinity Workbench chart.
+
+# Override the generated resource name (chart name) or the full release name.
+nameOverride: ""
+fullnameOverride: ""
+
+# Pull secrets for the private GHCR images, e.g. [{ name: ghcr-pull }].
+# Create the secret with:
+#   kubectl create secret docker-registry ghcr-pull \
+#     --docker-server=ghcr.io --docker-username=<user> --docker-password=<token>
+imagePullSecrets: []
+
+frontend:
+  enabled: true
+  image:
+    repository: ghcr.io/benchfinity/workbench
+    tag: develop
+    pullPolicy: IfNotPresent
+  replicas: 1
+  containerPort: 8080
+  resources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+  service:
+    type: ClusterIP
+    port: 80
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+backend:
+  # Disabled placeholder. The QQQ/Java REST API repo and image are TBD (#1).
+  enabled: false
+  image:
+    repository: ghcr.io/benchfinity/workbench-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicas: 1
+  containerPort: 8080
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+    port: 80
+  # Connection to a cluster-provided Postgres (not bundled by this chart).
+  database:
+    host: ""
+    port: 5432
+    name: benchfinity
+    user: benchfinity
+    # Secret holding the DB password. When set, the password is injected via
+    # secretKeyRef instead of a plaintext env value.
+    existingSecret: ""
+    existingSecretPasswordKey: password
+  # Optional MinIO/S3 object storage (not bundled by this chart).
+  objectStore:
+    enabled: false
+    endpoint: ""
+    bucket: benchfinity
+    existingSecret: ""
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: benchfinity.local
+      paths:
+        - path: /
+          pathType: Prefix
+          # Route to the "frontend" or "backend" service.
+          service: frontend
+  tls: []
+
+# Applied at the pod level.
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# Applied at the container level. The frontend uses nginx-unprivileged, which
+# writes to its temp dirs, so readOnlyRootFilesystem is left off by default.
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL

@@ -1,0 +1,85 @@
+# Local development stack for Benchfinity.
+#
+#   docker compose up                 -> frontend only (default)
+#   docker compose --profile full up  -> frontend + backend + postgres + minio
+#
+# Copy .env.example to .env first (the [full] profile reads it for credentials).
+# The GHCR image is private; run `docker login ghcr.io` before pulling by image.
+
+services:
+  frontend:
+    # No profile: always part of the default `docker compose up`.
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/benchfinity/workbench:develop
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  backend:
+    # Placeholder for the QQQ/Java REST API. Image is TBD (#1); enable with
+    # the `full` profile once the backend repo/image exists.
+    profiles: ["full"]
+    image: ghcr.io/benchfinity/workbench-api:latest
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - minio
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://benchfinity:change-me@postgres:5432/benchfinity}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-benchfinity}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-change-me-too}
+    ports:
+      - "8081:8080"
+
+  postgres:
+    profiles: ["full"]
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-benchfinity}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-benchfinity}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-benchfinity} -d ${POSTGRES_DB:-benchfinity}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    profiles: ["full"]
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-benchfinity}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-change-me-too}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "mc ready local || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  postgres-data: {}
+  minio-data: {}

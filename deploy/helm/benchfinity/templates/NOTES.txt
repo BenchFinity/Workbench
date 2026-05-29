@@ -1,0 +1,36 @@
+Benchfinity Workbench has been deployed.
+
+{{- if .Values.ingress.enabled }}
+
+The app is reachable via the configured Ingress host(s):
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}
+{{- end }}
+{{- else if .Values.frontend.enabled }}
+
+The frontend Service is ClusterIP-only. To reach it locally, port-forward:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward \
+    svc/{{ include "benchfinity.componentName" (dict "context" . "component" "frontend") }} \
+    8080:{{ .Values.frontend.service.port }}
+
+Then open http://127.0.0.1:8080
+{{- end }}
+
+{{- if .Values.backend.enabled }}
+
+Backend (QQQ API) is enabled and expects a reachable Postgres at
+{{ .Values.backend.database.host }}:{{ .Values.backend.database.port }}.
+{{- if not .Values.backend.database.existingSecret }}
+
+  WARNING: backend.database.existingSecret is not set, so no DATABASE_PASSWORD
+  was injected. Set it to a Secret holding the DB password.
+{{- end }}
+{{- end }}
+
+{{- if .Values.imagePullSecrets }}
+{{- else }}
+
+NOTE: The GHCR images are private. If pods fail with ImagePullBackOff, set
+imagePullSecrets in values to a docker-registry Secret with GHCR access.
+{{- end }}
