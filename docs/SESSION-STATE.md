@@ -1,10 +1,10 @@
 # Session State
 
 ## Current Branch
-`feature/no-ticket-gridfinity-baseplate-generator`
+`feature/9-public-repo-ci`
 
 ## Status
-V1 implementation is complete and the audit follow-up is closed. The codebase is structured as a stable foundation for the larger Workbench/Benchfinity phase.
+V1 implementation is complete and the audit follow-up is closed. The repository now uses `develop` as the default branch, and Workbench VNext work is tracked in GitHub Issues under the `Workbench VNext` milestone and the `Benchfinity Roadmap` project. Repository foundation work is tracked in GitHub Issue #9.
 
 ## Implemented
 - Benchfinity Vite, React, TypeScript app scaffold.
@@ -34,6 +34,8 @@ V1 implementation is complete and the audit follow-up is closed. The codebase is
 - Unit/export tests, including Bambu-style 3MF package structure and a manifold edge regression for generated tile meshes.
 - Regression coverage confirms open-bottom split tiles keep connector pads aligned with the underside notches.
 - `docs/WORKBENCH-VNEXT.md` captures the QQQ/Postgres-backed account, project, and workbench direction for the next version.
+- GitHub Issues #1 through #8 mirror the Workbench VNext TODO list.
+- GitHub Issue #9 tracks public repository setup, Docker packaging, CI, GHCR image publishing, and release automation.
 
 ## Verification
 - `npm run test` passes, 34 tests.
@@ -43,3 +45,10 @@ V1 implementation is complete and the audit follow-up is closed. The codebase is
 - Do not use the installed Bambu Studio CLI for automated validation. Its `--info` mode can trigger macOS crash reports even when the log says the 3MF loaded. Use package-structure tests and manual Bambu Studio GUI import checks instead.
 - Regression checks confirm split 3MF exports have one plate record per tile plus connector plate, and that build transforms spread the objects into non-overlapping plate lanes.
 - Regression checks cover rotated single STL exports, rotated split ZIP STL exports, connector-key quantities, 3MF metadata content types, connector-key 3MF object placement, and connector-key plate validation.
+
+## GitHub Workflow
+- Default branch: `develop`.
+- Active feature branch: `feature/9-public-repo-ci`.
+- Work issue: #9, `Prepare public repo, container CI, and releases`.
+- Roadmap project: `Benchfinity Roadmap`.
+- Repository home: `BenchFinity/workbench`.

@@ -21,11 +21,17 @@
 
 ## Benchfinity Workbench Next Phase
 
-- [ ] Confirm backend repo/app shape for QQQ/Postgres.
-- [ ] Define account, user, membership, project, workbench item, baseplate design, printer profile, and export artifact tables.
-- [ ] Decide artifact storage for generated STL, ZIP, and 3MF files.
-- [ ] Build the signed-in app shell with account/project navigation.
-- [ ] Preserve the V1 generator as the first workbench item type.
-- [ ] Persist baseplate design inputs and derived layout metadata.
-- [ ] Add export history with download actions.
-- [ ] Add backend and frontend tests for account scoping, project CRUD, design save/load, and export metadata.
+The Workbench backlog now lives in GitHub Issues under the `Workbench VNext` milestone and the `Benchfinity Roadmap` GitHub Project.
+
+- [ ] #1 Confirm Workbench backend repo and app shape.
+- [ ] #2 Define Workbench persistence model.
+- [ ] #3 Decide export artifact storage.
+- [ ] #4 Build signed-in Workbench app shell.
+- [ ] #5 Preserve V1 generator as first Workbench item type.
+- [ ] #6 Persist baseplate design inputs and derived metadata.
+- [ ] #7 Add export history and download actions.
+- [ ] #8 Add Workbench backend and frontend test coverage.
+
+## Repository Foundation
+
+- [ ] #9 Prepare public repo, container CI, and releases.
