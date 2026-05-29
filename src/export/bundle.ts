@@ -38,9 +38,11 @@ function createManifest(layout: PlateLayout, input: PlateInput) {
     projectName: input.projectName,
     printMode: input.openBottom ? "open-bottom lightweight" : "standard solid-bottom",
     compatibility: {
-      target: GRIDFINITY_PROFILE.name,
-      tracefinityRelease: GRIDFINITY_PROFILE.tracefinityRelease,
-      tracefinityReleaseDate: GRIDFINITY_PROFILE.tracefinityReleaseDate,
+      format: "Gridfinity",
+      profile: GRIDFINITY_PROFILE.name,
+      verifiedAgainst: GRIDFINITY_PROFILE.compatibilityStandard,
+      verifiedAgainstRelease: GRIDFINITY_PROFILE.compatibilityRelease,
+      verifiedAgainstReleaseDate: GRIDFINITY_PROFILE.compatibilityReleaseDate,
     },
     input,
     derived: {
