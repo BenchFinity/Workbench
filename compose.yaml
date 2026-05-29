@@ -51,11 +51,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-benchfinity} -d ${POSTGRES_DB:-benchfinity}",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-benchfinity} -d ${POSTGRES_DB:-benchfinity}"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -6,3 +6,7 @@ package-lock.json
 
 # Helm templates use Go template syntax, which is not valid YAML.
 deploy/helm/*/templates/
+
+# nginx configuration is not Prettier-managed.
+docker/nginx.conf
+docker/security-headers.inc
