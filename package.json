@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "Browser app for generating Gridfinity-compatible workbench baseplates, split print bundles, and Bambu Studio-style 3MF files.",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0-only",
   "author": "James Maes",
   "homepage": "https://github.com/BenchFinity/workbench#readme",
   "repository": {
