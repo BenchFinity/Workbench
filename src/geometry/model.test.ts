@@ -58,12 +58,8 @@ describe("createPlateModels", () => {
 
     expect(ceilingParts).toHaveLength(2);
     expect(padFloorParts).toHaveLength(ceilingParts.length);
-    expect(
-      padFloorBoxes.some((box) => box.max.x > (model?.tile.widthMm ?? 0) - input.cellSizeMm),
-    ).toBe(true);
-    expect(
-      padFloorBoxes.some((box) => box.max.y > (model?.tile.depthMm ?? 0) - input.cellSizeMm),
-    ).toBe(true);
+    expect(padFloorBoxes.some((box) => box.max.x > (model?.tile.widthMm ?? 0) - input.cellSizeMm)).toBe(true);
+    expect(padFloorBoxes.some((box) => box.max.y > (model?.tile.depthMm ?? 0) - input.cellSizeMm)).toBe(true);
 
     padFloorBoxes.forEach((box) => {
       expect(box.min.z).toBeCloseTo(GRIDFINITY_PROFILE.connectorKeyHeightMm);

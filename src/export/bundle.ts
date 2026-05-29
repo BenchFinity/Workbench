@@ -1,4 +1,6 @@
 import JSZip from "jszip";
+import pkg from "../../package.json";
+import { formatMm } from "../displayFormat";
 import { connectorKeyCount } from "../geometry/connectors";
 import { GRIDFINITY_PROFILE } from "../geometry/profile";
 import { serializeBinaryStlBuffer } from "./stl";
@@ -34,13 +36,15 @@ function createManifest(layout: PlateLayout, input: PlateInput) {
 
   return {
     generator: "benchfinity",
-    version: "0.1.0",
+    version: pkg.version,
     projectName: input.projectName,
     printMode: input.openBottom ? "open-bottom lightweight" : "standard solid-bottom",
     compatibility: {
-      target: GRIDFINITY_PROFILE.name,
-      tracefinityRelease: GRIDFINITY_PROFILE.tracefinityRelease,
-      tracefinityReleaseDate: GRIDFINITY_PROFILE.tracefinityReleaseDate,
+      format: "Gridfinity",
+      profile: GRIDFINITY_PROFILE.name,
+      verifiedAgainst: GRIDFINITY_PROFILE.compatibilityStandard,
+      verifiedAgainstRelease: GRIDFINITY_PROFILE.compatibilityRelease,
+      verifiedAgainstReleaseDate: GRIDFINITY_PROFILE.compatibilityReleaseDate,
     },
     input,
     derived: {
@@ -68,20 +72,23 @@ function createManifest(layout: PlateLayout, input: PlateInput) {
       splitEdges: tile.splitEdges,
       suggestedPrintRotationDeg: tile.rotationDeg,
     })),
-    connectors: keyCount > 0
-      ? {
-          filename: "connector-key.stl",
-          type: "edge-open underside spline key",
-          quantity: keyCount,
-          sizeMm: {
-            width: GRIDFINITY_PROFILE.connectorKeyWidthMm,
-            depth: GRIDFINITY_PROFILE.connectorKeyDepthMm,
-            height: GRIDFINITY_PROFILE.connectorKeyHeightMm,
-          },
-        }
-      : null,
+    connectors:
+      keyCount > 0
+        ? {
+            filename: "connector-key.stl",
+            type: "edge-open underside spline key",
+            quantity: keyCount,
+            sizeMm: {
+              width: GRIDFINITY_PROFILE.connectorKeyWidthMm,
+              depth: GRIDFINITY_PROFILE.connectorKeyDepthMm,
+              height: GRIDFINITY_PROFILE.connectorKeyHeightMm,
+            },
+          }
+        : null,
   };
 }
+
+export type ExportManifest = ReturnType<typeof createManifest>;
 
 function createReadme(layout: PlateLayout, input: PlateInput): string {
   const keyCount = connectorKeyCount(layout);
@@ -105,8 +112,4 @@ function createReadme(layout: PlateLayout, input: PlateInput): string {
   }
 
   return `${lines.join("\n")}\n`;
-}
-
-function formatMm(value: number): string {
-  return `${Number(value.toFixed(2))}mm`;
 }

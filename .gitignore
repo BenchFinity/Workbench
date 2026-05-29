@@ -7,3 +7,6 @@ result.json
 coverage/
 .vite/
 npm-debug.log*
+*.tsbuildinfo
+.env
+.env.*

@@ -1,12 +1,15 @@
 # PLAN: Gridfinity Baseplate Generator
 
 ## Goal
+
 Build a browser-based app that accepts a desired finished footprint, printer bed limits, and Gridfinity cell size, then previews and exports one or more printable baseplate files.
 
 ## Approach
+
 Use a client-only TypeScript web app with a shared geometry pipeline for preview and export. The app computes the largest standard Gridfinity grid that fits inside the requested finished size, centers it inside that envelope, fills the remaining perimeter with padding, splits it into bed-safe tiles when needed, renders the assembled result in 3D, and exports STL, ZIP, and 3MF assets.
 
 ## Product Scope
+
 - Inputs:
   - Project name for exported filenames and bundle metadata.
   - Desired finished width and depth, with inch and mm support.
@@ -25,6 +28,7 @@ Use a client-only TypeScript web app with a shared geometry pipeline for preview
   - Derived dimensions and tile count summary.
 
 ## V1 Decisions
+
 - Canonical compatibility target: Tracefinity-compatible standard Gridfinity bins, using Tracefinity release `0.4.0` from 2026-05-26 as the current public reference point.
 - Baseplate profile: standard Gridfinity baseplate socket profile on a `42mm x 42mm` pitch, with `6mm x 2mm` magnet pockets enabled by default in the Tracefinity preset and configurable off for faster drawer baseplates.
 - Finished size behavior: exact requested envelope with the largest whole-cell Gridfinity grid centered inside it and solid perimeter padding around the edges.
@@ -36,6 +40,7 @@ Use a client-only TypeScript web app with a shared geometry pipeline for preview
 - User defaults: settings dialog saves startup and reset defaults to browser local storage.
 
 ## Tracefinity Compatibility Notes
+
 Tracefinity currently documents Gridfinity units as `42mm x 42mm`; bin height uses `7mm` units plus a `5mm` base; standard magnets are `6mm x 2mm`; and generated bins conform to the Gridfinity spec. Its public repository lists release `0.4.0` as latest on 2026-05-26 and describes generated bins as Gridfinity-compatible with proper base profile, magnet holes, and stacking lip.
 
 Practical v1 rule: generated baseplates must accept Tracefinity bins without requiring special Tracefinity-specific bin settings. Magnet pockets are configurable, but the Tracefinity preset defaults them on and the baseplate socket geometry and pitch should remain standard.
@@ -47,6 +52,7 @@ References:
 - `https://github.com/gridfinity-unofficial/specification`
 
 ## Sizing Rules
+
 All internal geometry should use millimeters.
 
 For a requested size:
@@ -85,6 +91,7 @@ Example, `22in x 10.5in` with `42mm` cells:
 - Padding: `6.4mm` left/right and `7.35mm` front/back.
 
 ## Splitting Strategy
+
 Split preferably on Gridfinity cell boundaries so each tile remains standard and predictable. When perimeter padding is present, include the padding in the outermost tiles only.
 
 Derived values:
@@ -108,6 +115,7 @@ Rules:
 - If the bed cannot fit at least one grid cell plus required edge geometry, show a blocking validation error.
 
 ## Assembly Strategy
+
 Start with connector choices that do not change the top Gridfinity interface.
 
 Recommended MVP connector:
@@ -131,6 +139,7 @@ Later connector options:
 - No connector geometry for users mounting to a board.
 
 ## Geometry Pipeline
+
 Create a small geometry core that produces indexed triangle meshes from typed inputs.
 
 Suggested core types:
@@ -182,6 +191,7 @@ Implementation options:
 Recommendation: start with direct mesh generation if the chosen baseplate profile can be expressed without heavy boolean operations. Move to ManifoldJS if connector sockets, holes, and chamfers become fragile.
 
 ## Preview
+
 Use Three.js for the viewport.
 
 Preview features:
@@ -197,6 +207,7 @@ Preview features:
 The preview should consume the same generated tile mesh data used by exporters, not a simplified duplicate model.
 
 ## Export
+
 STL:
 
 - Export one STL for unsplit plates.
@@ -218,6 +229,7 @@ ZIP bundle:
 - `connector-*.stl` when applicable.
 
 ## Proposed Stack
+
 - Vite, React, TypeScript.
 - Three.js for preview.
 - Optional `@react-three/fiber` if component-based scene composition is useful.
@@ -230,6 +242,7 @@ ZIP bundle:
 - Playwright for viewport smoke tests and export flow checks.
 
 ## Files Affected
+
 Initial implementation will likely add:
 
 - `package.json` and lockfile.
@@ -240,6 +253,7 @@ Initial implementation will likely add:
 - `docs/` for planning and geometry notes.
 
 ## Steps
+
 1. [x] Confirm exact Gridfinity baseplate profile and first connector strategy.
 2. [x] Scaffold TypeScript web app.
 3. [x] Implement unit conversion, centered padded envelope sizing, and derived dimension summary.
@@ -253,4 +267,5 @@ Initial implementation will likely add:
 11. [x] Add browser smoke tests for preview and export.
 
 ## Open Questions
+
 - None for v1 planning. Remaining choices are implementation details unless requirements change.

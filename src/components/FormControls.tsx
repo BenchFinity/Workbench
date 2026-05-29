@@ -28,7 +28,15 @@ export function NumberField({
   );
 }
 
-export function TextField({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
+export function TextField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
   return (
     <label className="field">
       <span>{label}</span>
@@ -37,13 +45,31 @@ export function TextField({ label, value, onChange }: { label: string; value: st
   );
 }
 
-export function UnitSegment({ value, disabled = false, onChange }: { value: Unit; disabled?: boolean; onChange: (value: Unit) => void }) {
+export function UnitSegment({
+  value,
+  disabled = false,
+  onChange,
+}: {
+  value: Unit;
+  disabled?: boolean;
+  onChange: (value: Unit) => void;
+}) {
   return (
     <div className="segmented" role="group" aria-label="Units">
-      <button type="button" className={value === "in" ? "active" : ""} disabled={disabled} onClick={() => onChange("in")}>
+      <button
+        type="button"
+        className={value === "in" ? "active" : ""}
+        disabled={disabled}
+        onClick={() => onChange("in")}
+      >
         in
       </button>
-      <button type="button" className={value === "mm" ? "active" : ""} disabled={disabled} onClick={() => onChange("mm")}>
+      <button
+        type="button"
+        className={value === "mm" ? "active" : ""}
+        disabled={disabled}
+        onClick={() => onChange("mm")}
+      >
         mm
       </button>
     </div>

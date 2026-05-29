@@ -13,12 +13,14 @@ export type ConnectorKeyLayout = {
   rows: number;
 };
 
-const connectorEdgeIntervalMm = 96;
-const connectorKeyMarginMm = 20;
-const connectorKeySpacingMm = 24;
+// At most one connector key per ~96mm of split edge: a cadence chosen for key
+// strength and print economy, not tied to the 42mm Gridfinity cell pitch.
+const CONNECTOR_EDGE_INTERVAL_MM = 96;
+const CONNECTOR_KEY_MARGIN_MM = 20;
+const CONNECTOR_KEY_SPACING_MM = 24;
 
 export function socketCountForEdge(edgeLengthMm: number): number {
-  return Math.max(1, Math.floor(edgeLengthMm / connectorEdgeIntervalMm));
+  return Math.max(1, Math.floor(edgeLengthMm / CONNECTOR_EDGE_INTERVAL_MM));
 }
 
 export function connectorKeyCount(layout: PlateLayout): number {
@@ -51,11 +53,14 @@ export function planConnectorKeyLayout({
     };
   }
 
-  const columns = Math.max(1, Math.floor((bedWidthMm - connectorKeyMarginMm * 2 - keyWidthMm) / connectorKeySpacingMm) + 1);
+  const columns = Math.max(
+    1,
+    Math.floor((bedWidthMm - CONNECTOR_KEY_MARGIN_MM * 2 - keyWidthMm) / CONNECTOR_KEY_SPACING_MM) + 1,
+  );
   const rows = Math.ceil(count / columns);
   const placements = Array.from({ length: count }, (_, index) => ({
-    x: connectorKeyMarginMm + (index % columns) * connectorKeySpacingMm,
-    y: connectorKeyMarginMm + Math.floor(index / columns) * connectorKeySpacingMm,
+    x: CONNECTOR_KEY_MARGIN_MM + (index % columns) * CONNECTOR_KEY_SPACING_MM,
+    y: CONNECTOR_KEY_MARGIN_MM + Math.floor(index / columns) * CONNECTOR_KEY_SPACING_MM,
     z: 0,
   }));
   const fits = placements.every(
