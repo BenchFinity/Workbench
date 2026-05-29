@@ -89,8 +89,9 @@ podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
 
-# Applied at the container level. The frontend uses nginx-unprivileged, which
-# writes to its temp dirs, so readOnlyRootFilesystem is left off by default.
+# Applied at the container level. The frontend uses the distroless Chainguard
+# nginx base (nonroot uid 65532), which writes to its temp dirs, so
+# readOnlyRootFilesystem is left off by default.
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
