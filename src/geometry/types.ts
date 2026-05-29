@@ -2,6 +2,7 @@ import type { BufferGeometry } from "three";
 
 export type Unit = "in" | "mm";
 export type SplitEdge = "left" | "right" | "front" | "back";
+export type Vec2Mm = { x: number; y: number };
 
 export type PlateInput = {
   projectName: string;
@@ -34,10 +35,7 @@ export type TileSpec = {
   colCount: number;
   widthMm: number;
   depthMm: number;
-  originMm: {
-    x: number;
-    y: number;
-  };
+  originMm: Vec2Mm;
   paddingMm: EdgePadding;
   splitEdges: SplitEdge[];
   rotationDeg: 0 | 90;

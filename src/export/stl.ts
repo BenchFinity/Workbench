@@ -55,10 +55,7 @@ function trianglesFromGeometry(geometry: BufferGeometry, matrix = new Matrix4())
     b.fromBufferAttribute(position, ib).applyMatrix4(matrix);
     c.fromBufferAttribute(position, ic).applyMatrix4(matrix);
 
-    const normal = new Vector3()
-      .subVectors(b, a)
-      .cross(new Vector3().subVectors(c, a))
-      .normalize();
+    const normal = new Vector3().subVectors(b, a).cross(new Vector3().subVectors(c, a)).normalize();
 
     triangles.push({
       a: a.clone(),

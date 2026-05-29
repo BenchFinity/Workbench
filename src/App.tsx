@@ -9,7 +9,8 @@ import { buildExportFilename } from "./export/filenames";
 import { createConnectorKeyPart, createPlateModels } from "./geometry/model";
 import { deriveLayout } from "./geometry/layout";
 import type { PlateInput } from "./geometry/types";
-import { CUSTOM_PRINTER_ID, findPrinterPreset, groupPrintersByBrand } from "./printers";
+import { CUSTOM_PRINTER_ID, groupPrintersByBrand } from "./printers";
+import { DESIGN_SCHEMA_VERSION, applyPrinterToInput } from "./design";
 import { FACTORY_DEFAULTS, loadSavedDefaults, saveDefaults, type AppDefaults } from "./settings";
 import { validateExport } from "./validation";
 
@@ -17,8 +18,8 @@ export function App() {
   const initialDefaults = useMemo(() => loadSavedDefaults(), []);
   const [savedDefaults, setSavedDefaults] = useState<AppDefaults>(initialDefaults);
   const [draftDefaults, setDraftDefaults] = useState<AppDefaults>(initialDefaults);
-  const [input, setInput] = useState<PlateInput>(initialDefaults.input);
-  const [selectedPrinterId, setSelectedPrinterId] = useState(initialDefaults.selectedPrinterId);
+  const [input, setInput] = useState<PlateInput>(initialDefaults.design.input);
+  const [selectedPrinterId, setSelectedPrinterId] = useState(initialDefaults.design.selectedPrinterId);
   const [exploded, setExploded] = useState(initialDefaults.exploded);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -51,17 +52,7 @@ export function App() {
     setSelectedPrinterId(printerId);
     setStatus(null);
     setDownloadInfo(null);
-
-    const preset = findPrinterPreset(printerId);
-
-    if (preset) {
-      setInput((current) => ({
-        ...current,
-        bedWidth: preset.bedWidth,
-        bedDepth: preset.bedDepth,
-        bedUnit: preset.unit,
-      }));
-    }
+    setInput((current) => applyPrinterToInput(current, printerId));
   };
 
   const reset = () => {
@@ -80,8 +71,8 @@ export function App() {
   };
 
   const applyDefaults = (defaults: AppDefaults) => {
-    setSelectedPrinterId(defaults.selectedPrinterId);
-    setInput(defaults.input);
+    setSelectedPrinterId(defaults.design.selectedPrinterId);
+    setInput(defaults.design.input);
     setExploded(defaults.exploded);
   };
 
@@ -96,8 +87,11 @@ export function App() {
 
   const useCurrentAsDefaults = () => {
     setDraftDefaults({
-      input,
-      selectedPrinterId,
+      design: {
+        schemaVersion: DESIGN_SCHEMA_VERSION,
+        input,
+        selectedPrinterId,
+      },
       exploded,
     });
   };
@@ -116,7 +110,12 @@ export function App() {
     setStatus(null);
 
     try {
-      const exportFilename = buildExportFilename(input.projectName, layout.cols, layout.rows, exportFileExtension(format, models));
+      const exportFilename = buildExportFilename(
+        input.projectName,
+        layout.cols,
+        layout.rows,
+        exportFileExtension(format, models),
+      );
       const blob = await createExportBlob({
         format,
         input,
@@ -170,7 +169,11 @@ export function App() {
       </main>
       <footer className="app-footer">
         <span>Benchfinity</span>
-        <span>A KofTwentyTwo project</span>
+        <span>
+          <a href="https://www.benchfinity.com" target="_blank" rel="noreferrer">
+            benchfinity.com
+          </a>
+        </span>
       </footer>
       <SettingsDialog
         open={settingsOpen}

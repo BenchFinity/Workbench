@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import type { PlateInput } from "../geometry/types";
-import { CUSTOM_PRINTER_ID, findPrinterPreset, type PrinterGroup } from "../printers";
+import { CUSTOM_PRINTER_ID, type PrinterGroup } from "../printers";
+import { applyPrinterToInput } from "../design";
 import type { AppDefaults } from "../settings";
 import { NumberField, TextField, UnitSegment } from "./FormControls";
 
@@ -27,30 +28,27 @@ export function SettingsDialog({
     return null;
   }
 
-  const isCustomPrinter = draft.selectedPrinterId === CUSTOM_PRINTER_ID;
+  const isCustomPrinter = draft.design.selectedPrinterId === CUSTOM_PRINTER_ID;
   const updateDraftInput = (patch: Partial<PlateInput>) => {
     onDraftChange({
       ...draft,
-      input: {
-        ...draft.input,
-        ...patch,
+      design: {
+        ...draft.design,
+        input: {
+          ...draft.design.input,
+          ...patch,
+        },
       },
     });
   };
   const updateDraftPrinter = (printerId: string) => {
-    const preset = findPrinterPreset(printerId);
-
     onDraftChange({
       ...draft,
-      selectedPrinterId: printerId,
-      input: preset
-        ? {
-            ...draft.input,
-            bedWidth: preset.bedWidth,
-            bedDepth: preset.bedDepth,
-            bedUnit: preset.unit,
-          }
-        : draft.input,
+      design: {
+        ...draft.design,
+        selectedPrinterId: printerId,
+        input: applyPrinterToInput(draft.design.input, printerId),
+      },
     });
   };
 
@@ -67,23 +65,41 @@ export function SettingsDialog({
         <div className="settings-body">
           <fieldset>
             <legend>Project</legend>
-            <TextField label="Default name" value={draft.input.projectName} onChange={(projectName) => updateDraftInput({ projectName })} />
+            <TextField
+              label="Default name"
+              value={draft.design.input.projectName}
+              onChange={(projectName) => updateDraftInput({ projectName })}
+            />
           </fieldset>
 
           <fieldset>
             <legend>Finished Size</legend>
             <div className="two-col">
-              <NumberField label="Width" value={draft.input.finishedWidth} onChange={(finishedWidth) => updateDraftInput({ finishedWidth })} />
-              <NumberField label="Depth" value={draft.input.finishedDepth} onChange={(finishedDepth) => updateDraftInput({ finishedDepth })} />
+              <NumberField
+                label="Width"
+                value={draft.design.input.finishedWidth}
+                onChange={(finishedWidth) => updateDraftInput({ finishedWidth })}
+              />
+              <NumberField
+                label="Depth"
+                value={draft.design.input.finishedDepth}
+                onChange={(finishedDepth) => updateDraftInput({ finishedDepth })}
+              />
             </div>
-            <UnitSegment value={draft.input.finishedUnit} onChange={(finishedUnit) => updateDraftInput({ finishedUnit })} />
+            <UnitSegment
+              value={draft.design.input.finishedUnit}
+              onChange={(finishedUnit) => updateDraftInput({ finishedUnit })}
+            />
           </fieldset>
 
           <fieldset>
             <legend>Printer Bed</legend>
             <label className="field">
               <span>Printer</span>
-              <select value={draft.selectedPrinterId} onChange={(event) => updateDraftPrinter(event.target.value)}>
+              <select
+                value={draft.design.selectedPrinterId}
+                onChange={(event) => updateDraftPrinter(event.target.value)}
+              >
                 {printerGroups.map((group) => (
                   <optgroup key={group.brand} label={group.brand}>
                     {group.presets.map((preset) => (
@@ -97,20 +113,44 @@ export function SettingsDialog({
               </select>
             </label>
             <div className="two-col">
-              <NumberField label="Width" value={draft.input.bedWidth} disabled={!isCustomPrinter} onChange={(bedWidth) => updateDraftInput({ bedWidth })} />
-              <NumberField label="Depth" value={draft.input.bedDepth} disabled={!isCustomPrinter} onChange={(bedDepth) => updateDraftInput({ bedDepth })} />
+              <NumberField
+                label="Width"
+                value={draft.design.input.bedWidth}
+                disabled={!isCustomPrinter}
+                onChange={(bedWidth) => updateDraftInput({ bedWidth })}
+              />
+              <NumberField
+                label="Depth"
+                value={draft.design.input.bedDepth}
+                disabled={!isCustomPrinter}
+                onChange={(bedDepth) => updateDraftInput({ bedDepth })}
+              />
             </div>
-            <UnitSegment value={draft.input.bedUnit} disabled={!isCustomPrinter} onChange={(bedUnit) => updateDraftInput({ bedUnit })} />
-            <NumberField label="Print margin, mm" value={draft.input.printMarginMm} step={0.5} onChange={(printMarginMm) => updateDraftInput({ printMarginMm })} />
+            <UnitSegment
+              value={draft.design.input.bedUnit}
+              disabled={!isCustomPrinter}
+              onChange={(bedUnit) => updateDraftInput({ bedUnit })}
+            />
+            <NumberField
+              label="Print margin, mm"
+              value={draft.design.input.printMarginMm}
+              step={0.5}
+              onChange={(printMarginMm) => updateDraftInput({ printMarginMm })}
+            />
           </fieldset>
 
           <fieldset>
             <legend>Gridfinity</legend>
-            <NumberField label="Cell pitch, mm" value={draft.input.cellSizeMm} step={0.5} onChange={(cellSizeMm) => updateDraftInput({ cellSizeMm })} />
+            <NumberField
+              label="Cell pitch, mm"
+              value={draft.design.input.cellSizeMm}
+              step={0.5}
+              onChange={(cellSizeMm) => updateDraftInput({ cellSizeMm })}
+            />
             <label className="toggle-row">
               <input
                 type="checkbox"
-                checked={draft.input.includeMagnets}
+                checked={draft.design.input.includeMagnets}
                 onChange={(event) => updateDraftInput({ includeMagnets: event.target.checked })}
               />
               <span>6 x 2mm magnet pockets</span>
@@ -118,7 +158,7 @@ export function SettingsDialog({
             <label className="toggle-row">
               <input
                 type="checkbox"
-                checked={draft.input.openBottom}
+                checked={draft.design.input.openBottom}
                 onChange={(event) => updateDraftInput({ openBottom: event.target.checked })}
               />
               <span>Open-bottom lightweight grid</span>

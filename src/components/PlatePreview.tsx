@@ -37,7 +37,12 @@ function SceneCamera({ layout }: { layout: PlateLayout }) {
   const { camera } = useThree();
 
   useEffect(() => {
-    const maxDimension = Math.max(layout.targetWidthMm, layout.targetDepthMm, layout.printableWidthMm, layout.printableDepthMm);
+    const maxDimension = Math.max(
+      layout.targetWidthMm,
+      layout.targetDepthMm,
+      layout.printableWidthMm,
+      layout.printableDepthMm,
+    );
     camera.up.set(0, 0, 1);
     camera.position.set(maxDimension * 0.65, -maxDimension * 0.95, maxDimension * 0.62);
     camera.lookAt(0, 0, 0);

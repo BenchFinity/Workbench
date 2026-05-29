@@ -1,14 +1,14 @@
 import JSZip from "jszip";
 import type { GeometryPart, TileModel } from "../../geometry/types";
 import {
-  bambuFilamentSequencePath,
-  bambuModelSettingsPath,
-  bambuSliceInfoPath,
-  contentTypesPath,
-  defaultObjectName,
-  modelPath,
-  modelRelationshipsPath,
-  packageRelationshipsPath,
+  BAMBU_FILAMENT_SEQUENCE_PATH,
+  BAMBU_MODEL_SETTINGS_PATH,
+  BAMBU_SLICE_INFO_PATH,
+  CONTENT_TYPES_PATH,
+  DEFAULT_OBJECT_NAME,
+  MODEL_PATH,
+  MODEL_RELATIONSHIPS_PATH,
+  PACKAGE_RELATIONSHIPS_PATH,
 } from "./constants";
 import { createMesh, maxModelSize } from "./mesh";
 import { createPlatePlacement } from "./placement";
@@ -18,11 +18,7 @@ import {
   createModelXml,
   createPackageRelationshipsXml,
 } from "./coreXml";
-import {
-  createBambuFilamentSequenceJson,
-  createBambuModelSettingsXml,
-  createBambuSliceInfoXml,
-} from "./bambuMetadata";
+import { createBambuFilamentSequenceJson, createBambuModelSettingsXml, createBambuSliceInfoXml } from "./bambuMetadata";
 import type { ThreeMfObject, ThreeMfObjectInput, ThreeMfPackageOptions } from "./types";
 
 export async function createThreeMfPackage(source: GeometryPart[], options?: ThreeMfPackageOptions): Promise<Blob>;
@@ -46,7 +42,7 @@ export async function createThreeMfPackageFromParts(
   parts: GeometryPart[],
   options: ThreeMfPackageOptions = {},
 ): Promise<Blob> {
-  const name = options.objectName?.trim() || options.title?.trim() || defaultObjectName;
+  const name = options.objectName?.trim() || options.title?.trim() || DEFAULT_OBJECT_NAME;
   return createThreeMfPackageFromObjects([{ name, parts }], options);
 }
 
@@ -95,13 +91,13 @@ async function createThreeMfPackageFromObjects(
   const objects = objectInputs.map((input, index) => createObject(input, index, options));
 
   const zip = new JSZip();
-  zip.file(contentTypesPath, createContentTypesXml());
-  zip.file(packageRelationshipsPath, createPackageRelationshipsXml());
-  zip.file(modelPath, createModelXml(objects, options));
-  zip.file(modelRelationshipsPath, createModelRelationshipsXml());
-  zip.file(bambuModelSettingsPath, createBambuModelSettingsXml(objects));
-  zip.file(bambuSliceInfoPath, createBambuSliceInfoXml());
-  zip.file(bambuFilamentSequencePath, createBambuFilamentSequenceJson(objects));
+  zip.file(CONTENT_TYPES_PATH, createContentTypesXml());
+  zip.file(PACKAGE_RELATIONSHIPS_PATH, createPackageRelationshipsXml());
+  zip.file(MODEL_PATH, createModelXml(objects, options));
+  zip.file(MODEL_RELATIONSHIPS_PATH, createModelRelationshipsXml());
+  zip.file(BAMBU_MODEL_SETTINGS_PATH, createBambuModelSettingsXml(objects));
+  zip.file(BAMBU_SLICE_INFO_PATH, createBambuSliceInfoXml());
+  zip.file(BAMBU_FILAMENT_SEQUENCE_PATH, createBambuFilamentSequenceJson(objects));
 
   return zip.generateAsync({ type: "blob", mimeType: "model/3mf" });
 }
@@ -111,18 +107,19 @@ function createObject(input: ThreeMfObjectInput, index: number, options: ThreeMf
     throw new Error(`Cannot create 3MF object "${input.name}" without geometry parts.`);
   }
 
-  const placement = input.meshTranslationMm && input.buildTranslationMm
-    ? {
-        meshTranslationMm: input.meshTranslationMm,
-        buildTranslationMm: input.buildTranslationMm,
-      }
-    : createPlatePlacement(
-        input.parts,
-        options.plateWidthMm,
-        options.plateDepthMm,
-        undefined,
-        input.plateIndex ?? index,
-      );
+  const placement =
+    input.meshTranslationMm && input.buildTranslationMm
+      ? {
+          meshTranslationMm: input.meshTranslationMm,
+          buildTranslationMm: input.buildTranslationMm,
+        }
+      : createPlatePlacement(
+          input.parts,
+          options.plateWidthMm,
+          options.plateDepthMm,
+          undefined,
+          input.plateIndex ?? index,
+        );
   const mesh = createMesh(input.parts, placement.meshTranslationMm, input.rotationDeg ?? 0);
 
   if (mesh.triangles.length === 0) {

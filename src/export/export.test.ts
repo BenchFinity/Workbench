@@ -165,8 +165,8 @@ describe("exports", () => {
     expect(packageRelationshipsText).toContain("http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel");
     expect(modelRelationshipsText).toContain("http://schemas.openxmlformats.org/package/2006/relationships");
     expect(modelText).toContain('unit="millimeter"');
-    expect(modelText).toContain("<metadata name=\"Application\">BambuStudio-");
-    expect(modelText).toContain("<metadata name=\"BambuStudio:3mfVersion\">1</metadata>");
+    expect(modelText).toContain('<metadata name="Application">BambuStudio-');
+    expect(modelText).toContain('<metadata name="BambuStudio:3mfVersion">1</metadata>');
     expect(modelText).toContain(`<object id="1" type="model">`);
     expect(modelText).toContain(`<object id="2" type="model" name="${models[0].tile.id}">`);
     expect(modelText).toContain('<item objectid="2" transform=');
@@ -270,9 +270,7 @@ function countMatches(value: string, pattern: RegExp): number {
 }
 
 function readVertexCoordinates(modelText: string, axis: "x" | "y" | "z"): number[] {
-  return Array.from(modelText.matchAll(new RegExp(`<vertex[^>]* ${axis}="([^"]+)"`, "g")), (match) =>
-    Number(match[1]),
-  );
+  return Array.from(modelText.matchAll(new RegExp(`<vertex[^>]* ${axis}="([^"]+)"`, "g")), (match) => Number(match[1]));
 }
 
 function readBuildTransformTranslations(modelText: string): { x: number; y: number; z: number }[] {
