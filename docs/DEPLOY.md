@@ -15,6 +15,12 @@ docker pull ghcr.io/benchfinity/workbench:develop
 Tags: `:develop` (rolling develop build), `:<version>` (release on main),
 plus per-commit `-SNAPSHOT` tags.
 
+The frontend image is built on the distroless Chainguard nginx base
+(`cgr.dev/chainguard/nginx`, nonroot, no shell/package manager) per
+[ADR 0001](adr/0001-distroless-base-images.md). It has no container
+`HEALTHCHECK`; health is delegated to orchestrator HTTP probes (the Helm chart
+uses `httpGet`).
+
 ## 2. Run locally with docker compose
 
 ```bash

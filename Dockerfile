@@ -12,18 +12,21 @@ COPY . .
 
 RUN npm run build
 
-FROM nginxinc/nginx-unprivileged:1.27-alpine
+# Distroless Chainguard nginx: nonroot (uid 65532), no shell, no package
+# manager, daily-rebuilt with near-zero CVEs. See docs/adr/0001-distroless-base-images.md.
+# Digest-pinned for reproducibility; refresh via Dependabot/Renovate or manually
+# (docker buildx imagetools inspect cgr.dev/chainguard/nginx:latest).
+FROM cgr.dev/chainguard/nginx:latest@sha256:71093c1127c31422838904b00b32287bd2bf58cd06e0abc3c85d96597d46a448
 
-# Apply the latest alpine security patches on top of the pinned base image
-# (the base lags behind fixed OS-package CVEs; image-scan blocks on those).
-USER root
-RUN apk --no-cache upgrade
-USER nginx
-
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+# Chainguard nginx mirrors the stock layout: nginx.conf includes
+# /etc/nginx/conf.d/*.conf, listens on 8080, and serves /usr/share/nginx/html.
+# Overwrite the base's default site (nginx.default.conf, also :8080) so only our
+# SPA server block is active and there is no duplicate default_server.
+COPY docker/nginx.conf /etc/nginx/conf.d/nginx.default.conf
 COPY docker/security-headers.inc /etc/nginx/conf.d/security-headers.inc
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 8080
 
-HEALTHCHECK CMD wget -qO- http://127.0.0.1:8080/ || exit 1
+# No HEALTHCHECK: distroless has no shell/wget. Container health is handled by
+# orchestrator probes (Helm uses httpGet; compose has no healthcheck).

@@ -16,12 +16,8 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+    # No healthcheck: the distroless Chainguard nginx base has no shell/wget.
+    # Health is handled by orchestrator HTTP probes (the Helm chart uses httpGet).
 
   backend:
     # Placeholder for the QQQ/Java REST API. Image is TBD (#1); enable with
