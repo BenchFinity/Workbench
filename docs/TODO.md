@@ -34,4 +34,9 @@ The Workbench backlog now lives in GitHub Issues under the `Workbench VNext` mil
 
 ## Repository Foundation
 
-- [ ] #9 Prepare public repo, container CI, and releases.
+- [x] #9 Prepare public repo, container CI, and releases. Done, plus: AGPL-3.0 + DCO; Helm/compose/ArgoCD + chart publishing; HIGH+ security gates (npm audit, dependency-review, Trivy image-scan, CodeQL); distroless Chainguard images (build + runtime); branch protection (review + CODEOWNERS + signed + linear); Dependabot npm/actions/docker.
+
+## Open Pull Requests (triage next session)
+
+- [ ] #16 HELD: npm-dev group (TS 5->6, Vite 6->8, plugin-react 4->6) fails `validate`; needs a dedicated migration, not an auto-merge.
+- [ ] #24-#27: routine CI action bumps (setup-helm, docker/login, codeql-action, checkout).
