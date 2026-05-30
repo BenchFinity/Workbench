@@ -1,42 +1,43 @@
 # TODO
 
-## Gridfinity Baseplate Generator
+Product vision: `docs/PRODUCT-VISION.md`. Authoritative roadmap: `docs/ROADMAP.md`.
+Living tracker: GitHub Issues + the **Benchfinity Roadmap** project (milestones
+`Increment 0` / `Phase A` / `B` / `C` / `D`). This file is a convenience mirror.
 
-- [x] Choose canonical v1 Gridfinity baseplate geometry: Tracefinity-compatible standard Gridfinity.
-- [x] Decide default sizing behavior: exact requested envelope with centered grid and equal perimeter padding.
-- [x] Decide v1 split connector: edge-open underside connector notches with separate printed spline keys.
-- [x] Decide Tracefinity preset magnet behavior: on by default, configurable off.
-- [x] Scaffold the TypeScript web app.
-- [x] Implement centered padded envelope sizing and unit conversion.
-- [x] Implement bed-fit validation and split layout.
-- [x] Render a 3D preview from generated tile mesh data.
-- [x] Export single-plate STL.
-- [x] Export split-plate ZIP with manifest.
-- [x] Add printer bed presets with Custom manual entry.
-- [x] Add project name input for export filenames and bundle metadata.
-- [x] Add settings dialog for saved defaults in local storage.
-- [x] Add open-bottom lightweight print mode.
-- [x] Export 3MF for direct Bambu Studio import.
-- [x] Add tests for sizing, splitting, manifests, and preview/export smoke paths.
+## Done
 
-## Benchfinity Workbench Next Phase
+- [x] V1 Gridfinity **grid** generator: centered/padded envelope sizing, bed-fit + split, 3D preview, STL / split-ZIP / 3MF export, printer presets, settings, tests.
+- [x] Repository Foundation (#9): public repo, container CI, distroless Chainguard images, HIGH+ security gates, AGPL-3.0 + DCO, branch protection, Dependabot, Helm/compose/ArgoCD + chart publishing.
+- [x] CI hardening: Node-24 action bumps (#24–#27); GHCR packages public; `develop` CI green.
+- [x] Product vision + roadmap rebuilt; GitHub restructured to Increment 0 / Phase A–D.
 
-The Workbench backlog now lives in GitHub Issues under the `Workbench VNext` milestone and the `Benchfinity Roadmap` GitHub Project.
+## Increment 0 — Launch (ship the V1 grid generator live)
 
-- [ ] #1 Confirm Workbench backend repo and app shape.
-- [ ] #2 Define Workbench persistence model.
-- [ ] #3 Decide export artifact storage.
+- [ ] #29 Create `Benchfinity-CD` GitOps repo (ArgoCD + Kustomize, wraps the OCI chart).
+- [ ] #30 Deploy V1 grid generator to production (`benchfinity.com`, dedicated static IP, Traefik + cert-manager `letsencrypt-prod`).
+
+## Phase A — QQQ Spine (the platform-first showcase)
+
+- [ ] #1 Confirm QQQ backend repo, app shape, and local dev run.
+- [ ] #2 Define persistence model: System → ContainerType → ContainerInstance → Inserts.
+- [ ] #31 Decide auth/account provider (Authentik vs embedded).
 - [ ] #4 Build signed-in Workbench app shell.
-- [ ] #5 Preserve V1 generator as first Workbench item type.
+
+## Phase B — Grid Persisted & Reusable
+
+- [ ] #5 Preserve V1 generator as first Workbench item type (wrap, never rewrite — issue #5 constraint).
 - [ ] #6 Persist baseplate design inputs and derived metadata.
+- [ ] #3 Decide export artifact storage.
 - [ ] #7 Add export history and download actions.
-- [ ] #8 Add Workbench backend and frontend test coverage.
+- [ ] #8 Add backend + frontend test coverage (raise the 34-test baseline).
 
-## Repository Foundation
+## Phase C — Bin Plugin Engine (anonymous, client-side, runs parallel to A→B)
 
-- [x] #9 Prepare public repo, container CI, and releases. Done, plus: AGPL-3.0 + DCO; Helm/compose/ArgoCD + chart publishing; HIGH+ security gates (npm audit, dependency-review, Trivy image-scan, CodeQL); distroless Chainguard images (build + runtime); branch protection (review + CODEOWNERS + signed + linear); Dependabot npm/actions/docker.
+- [ ] #32 Bin plugin engine (typed generator framework + Gridfinity footprint contract).
+- [ ] #33 First bin types: open bin, storage box, tool-traced.
+- [ ] #34 Stand-alone boxes (Modibox-style, non-grid-bound).
 
-## Open Pull Requests (triage next session)
+## Phase D — Composition & Visual Layout (rich logged-in end-state)
 
-- [ ] #16 HELD: npm-dev group (TS 5->6, Vite 6->8, plugin-react 4->6) fails `validate`; needs a dedicated migration, not an auto-merge.
-- [ ] #24-#27: routine CI action bumps (setup-helm, docker/login, codeql-action, checkout).
+- [ ] #35 Composition: systems, container types, and instances.
+- [ ] #36 Visual layout and placement of bins on grids.
