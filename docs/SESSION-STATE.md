@@ -4,9 +4,10 @@
 
 ## Current Status
 
-Product vision + roadmap rebuilt and merged; the company-OS sync is operational. **Next
-session is focused on Increment 0 — take the V1 grid generator live at `benchfinity.com`**
-(plan below; needs two inputs from James). Workbench `develop` is clean and CI-green.
+Product vision + roadmap rebuilt and merged; the company-OS sync is operational; **DNS + TLS
+for `benchfinity.com` are now live** (registrar delegation fixed this session). **Next session:
+Increment 0 — take the V1 grid generator live at `benchfinity.com`** (plan below; now needs only
+a go-ahead — the static IP and DNS are already resolved). Workbench `develop` is clean and CI-green.
 
 ## What Was Done This Session
 
@@ -28,6 +29,12 @@ session is focused on Increment 0 — take the V1 grid generator live at `benchf
   `BenchFinity/company`). PR #38 merged. CI `.github/workflows/company-os-sync.yml` (token-guarded)
   auto-PRs the company repo on change. Company#6 merged → pages live on `company:develop`.
   Verified end-to-end (secret `COMPANY_OS_TOKEN` set; sync run authenticated, clean no-op).
+- **DNS + TLS:** `benchfinity.com` registrar NS were wedged on Route 53 (the vanity
+  `ns*-benchfinity.mmltholdings.com` host objects are stuck "linked" at the registry). Fixed by
+  delegating to in-bailiwick **`ns1`/`ns2.benchfinity.com` + glue → `50.122.5.149`** (no MMLT hop);
+  DNS is now served by the **Synology** zone (apex + `www → k8s → 50.122.5.149` already set), not
+  Route 53. `dsm.benchfinity.com` re-issued with a trusted Let's Encrypt cert (covers
+  calendar/chat/contacts/drive/mail too). AWS account `744245396565`, profile `kingsrook_root_admin`.
 
 ## Active Branches
 
@@ -47,8 +54,10 @@ session is focused on Increment 0 — take the V1 grid generator live at `benchf
 
 ## Increment 0 — next-session plan
 
-**Inputs needed from James:** (1) the **dedicated static IP** for `benchfinity.com`; (2) a
-**go-ahead** to create public repo `BenchFinity/benchfinity-cd` + wire ArgoCD on `k8s-prod`.
+**Static IP is known: `50.122.5.149`** (benchfinity.com apex + `www` already resolve there via the
+Synology DNS). **Only input needed: a go-ahead** to create public repo `BenchFinity/benchfinity-cd`
+
+- wire ArgoCD on `k8s-prod`.
 
 1. Create `BenchFinity/benchfinity-cd` (Kustomize `base/` + `overlays/production/`), templated on
    `/Users/james.maes/Git.Local/Kof22/Website-CD`; **wrap the OCI chart**
@@ -56,10 +65,12 @@ session is focused on Increment 0 — take the V1 grid generator live at `benchf
    values. Image is **public** → no `imagePullSecret`.
 2. ArgoCD Application → namespace `benchfinity`, automated prune+self-heal, `CreateNamespace`;
    pin an immutable `:<version>-SNAPSHOT.<sha>` tag for the first launch.
-3. Traefik ingress + `cert-manager.io/cluster-issuer: letsencrypt-prod` + TLS + HTTP→HTTPS
-   redirect; expose on the dedicated static IP.
-4. Route 53 A record (`benchfinity.com` → static IP); verify anonymous HTTPS load + STL/3MF
-   export. Fix stale `docs/DEPLOY.md` (image is public; no pull secret).
+3. Traefik ingress for `benchfinity.com` + `cert-manager.io/cluster-issuer: letsencrypt-prod` + TLS
+   - HTTP→HTTPS redirect, on front-door IP **`50.122.5.149`**. NOTE: that IP currently fronts the
+     shared cluster (kof22 etc.) — confirm the benchfinity host routes through Traefik there.
+4. **DNS is already done** (`benchfinity.com` → `50.122.5.149` via Synology). Just verify the
+   anonymous HTTPS load + STL/3MF export once the ingress + cert are up. Fix stale `docs/DEPLOY.md`
+   (image is public; no pull secret).
 
 ## Key Reference
 
@@ -67,6 +78,10 @@ session is focused on Increment 0 — take the V1 grid generator live at `benchf
   `../brand` (`BenchFinity/company`), which defers to us on product.
 - **Deploy:** Talos `k8s-prod`, Traefik, cert-manager `letsencrypt-prod` (Ready), ArgoCD,
   postgres-operator. Image `ghcr.io/benchfinity/workbench` + chart `…/charts/benchfinity` (both public).
+- **DNS:** `benchfinity.com` is delegated to `ns1`/`ns2.benchfinity.com` (glue → `50.122.5.149`) and
+  served by the **Synology** zone — NOT Route 53; edit records in Synology DNS. Registrar/account is
+  `744245396565` via `aws --profile kingsrook_root_admin` (`aws sso login --profile kingsrook_root_admin`
+  first). Optional cleanup: zone NS still says `ns.benchfinity.com` (lame-delegation; harmless).
 - **Company-OS sync:** edit `scripts/company-os/generate.mjs` → push `develop` → workflow PRs
   `BenchFinity/company`. Secret `COMPANY_OS_TOKEN` (fine-grained PAT: company Contents + PRs R/W).
 - **Gates:** `lint && format:check (runs on .md too) && typecheck && test (34 baseline) && build`.
