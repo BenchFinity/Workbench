@@ -23,6 +23,15 @@ export default tseslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
+  {
+    // Node-run build/tooling scripts (not part of the browser app).
+    files: ["scripts/**/*.{js,mjs}"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "module",
+      globals: { ...globals.node },
+    },
+  },
   // Keep formatting concerns out of ESLint; Prettier owns them.
   prettier,
 );
