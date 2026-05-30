@@ -10,8 +10,9 @@ Living tracker: GitHub Issues + the **Benchfinity Roadmap** project (milestones
 - [x] Repository Foundation (#9): public repo, container CI, distroless Chainguard images, HIGH+ security gates, AGPL-3.0 + DCO, branch protection, Dependabot, Helm/compose/ArgoCD + chart publishing.
 - [x] CI hardening: Node-24 action bumps (#24–#27); GHCR packages public; `develop` CI green.
 - [x] Product vision + roadmap rebuilt; GitHub restructured to Increment 0 / Phase A–D.
+- [x] Company-OS sync: `scripts/company-os/` generator + token-guarded CI workflow; `product/` + `software/` showcases live on `BenchFinity/company`.
 
-## Increment 0 — Launch (ship the V1 grid generator live)
+## Increment 0 — Launch (ship the V1 grid generator live) — NEXT
 
 - [ ] #29 Create `Benchfinity-CD` GitOps repo (ArgoCD + Kustomize, wraps the OCI chart).
 - [ ] #30 Deploy V1 grid generator to production (`benchfinity.com`, dedicated static IP, Traefik + cert-manager `letsencrypt-prod`).
