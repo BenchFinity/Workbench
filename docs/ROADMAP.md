@@ -48,9 +48,11 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
 
 ## Increment 0 — Launch: V1 grid live
 
-**Goal:** Get the existing anonymous client-side V1 grid generator live in production at `benchfinity.com` on Talos `k8s-prod` via a new `benchfinity-cd` GitOps repo. Deployment only — no app features, no backend, no auth. This is the launch-then-build beachhead the whole continuous-delivery model depends on.
+**Goal:** Get the existing anonymous client-side V1 grid generator live in production at `benchfinity.com` on Talos `k8s-prod` via the new private `BenchFinity/Workbench-CD` GitOps repo. Deployment only — no app features, no auth. This is the launch-then-build beachhead the whole continuous-delivery model depends on.
 
 > **Lineage:** builds on the closed Repository Foundation work (#9), which already produces the multi-arch GHCR image `ghcr.io/benchfinity/workbench` (rolling `:develop` + immutable `:<version>-SNAPSHOT.<sha>`) and the OCI Helm chart `oci://ghcr.io/benchfinity/charts/benchfinity`.
+
+> **Mechanics updated — see [ADR 0002](adr/0002-production-deployment-architecture.md) + [PLAN-workbench-cd.md](PLAN-workbench-cd.md).** The detailed 0.1–0.4 steps below predate the design session and are superseded. Net changes: the CD repo is **private `BenchFinity/Workbench-CD`** (not public `benchfinity-cd`); it is **raw Kustomize modeled on `voyage-cd`** (not an OCI-chart wrap), since the fleet is uniformly raw Kustomize and the published chart stays the external self-hoster artifact; the full voyage-shaped **data plane goes live now** (Postgres-operator + Redis + MinIO + B2 backups) with the QQQ `benchfinity-api` tier parked until Phase A (#1); DNS + TLS are **already resolved** (Synology zone, apex/`www` → `50.122.5.149`, ClusterIssuer `letsencrypt-production`); and the pinned image is **`:0.1.0`** cut from a `main` release.
 
 ### 0.1 — Scaffold the Benchfinity-CD GitOps repo from the Website-CD pattern
 

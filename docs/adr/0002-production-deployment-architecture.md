@@ -43,7 +43,7 @@ publishes a Helm chart and image to GHCR, both public.
   cutting workbench `develop` to `main`. The image is public, so no pull secret.
 - Secrets use Bitnami **sealed-secrets** (MinIO root, B2 backup key, Argo CD repo
   deploy key). Postgres user credentials are operator-generated, not sealed.
-- CI for `benchfinity-cd` is **GitHub Actions** (`kustomize build` +
+- CI for `Workbench-CD` is **GitHub Actions** (`kustomize build` +
   `kubeconform` + `gitleaks`, with `kube-linter`/`yamllint` advisory), since the
   BenchFinity org is GitHub-native. The app-of-apps additions ride that repo's
   existing CircleCI/Munitor pipeline unchanged.
