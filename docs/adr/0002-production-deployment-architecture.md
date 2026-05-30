@@ -23,7 +23,7 @@ publishes a Helm chart and image to GHCR, both public.
 
 ## Decision
 
-- Production runs through a new private repo **`BenchFinity/benchfinity-cd`**,
+- Production runs through a new private repo **`BenchFinity/Workbench-CD`**,
   raw Kustomize modeled on `voyage-cd`, onboarded into `k8s-app-of-apps`
   (`apps/`, `shared/` AppProject + sealed repo-creds, `infra/` sealed secrets,
   `envs/production`).
@@ -61,7 +61,7 @@ publishes a Helm chart and image to GHCR, both public.
 
 ## Consequences
 
-- `benchfinity-cd` is the first GitHub-Actions-validated CD repo in an otherwise
+- `Workbench-CD` is the first GitHub-Actions-validated CD repo in an otherwise
   CircleCI/Munitor fleet — a deliberate, documented one-off.
 - A standing Postgres/Redis/MinIO footprint exists with no consumer until #1;
   backup jobs run against an empty database initially.
