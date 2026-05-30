@@ -1,0 +1,89 @@
+name: company-os-sync
+
+# Regenerates the company OS (BenchFinity/company) product/ + software/ review showcases
+# from the source of truth here in Workbench, and opens a PR into the company repo.
+#
+# Requires a repo secret COMPANY_OS_TOKEN: a fine-grained PAT (or GitHub App installation
+# token) with Contents: read & write + Pull requests: read & write on BenchFinity/company.
+# Until that secret is set, the job guards itself off and is a clean no-op.
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "scripts/company-os/**"
+      - "docs/PRODUCT-VISION.md"
+      - "docs/ROADMAP.md"
+      - "docs/DEPLOY.md"
+      - "AGENTS.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: company-os-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check sync token
+        id: guard
+        env:
+          TOKEN: ${{ secrets.COMPANY_OS_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "COMPANY_OS_TOKEN not set - skipping company-OS sync (no-op)."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout Workbench (generator source)
+        if: steps.guard.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        if: steps.guard.outputs.enabled == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Checkout company OS
+        if: steps.guard.outputs.enabled == 'true'
+        uses: actions/checkout@v6
+        with:
+          repository: BenchFinity/company
+          ref: develop
+          token: ${{ secrets.COMPANY_OS_TOKEN }}
+          path: company-os
+
+      - name: Generate division showcases
+        if: steps.guard.outputs.enabled == 'true'
+        env:
+          COMPANY_OS_DIR: ${{ github.workspace }}/company-os
+        run: node scripts/company-os/generate.mjs
+
+      - name: Open PR into company OS (only if changed)
+        if: steps.guard.outputs.enabled == 'true'
+        working-directory: company-os
+        env:
+          GH_TOKEN: ${{ secrets.COMPANY_OS_TOKEN }}
+        run: |
+          if git diff --quiet -- product/review.html software/review.html; then
+            echo "No showcase changes; nothing to sync."
+            exit 0
+          fi
+          git config user.name "benchfinity-bot"
+          git config user.email "bot@users.noreply.github.com"
+          BRANCH="bot/company-os-sync-${GITHUB_SHA::7}"
+          git checkout -b "$BRANCH"
+          git add product/review.html software/review.html
+          git commit -m "chore(product,software): sync division showcases from Workbench"
+          git push -u origin "$BRANCH"
+          gh pr create --repo BenchFinity/company --base develop --head "$BRANCH" \
+            --title "chore: sync product + software showcases from Workbench" \
+            --body "Automated sync of product/review.html + software/review.html from BenchFinity/Workbench (scripts/company-os/generate.mjs). Source of truth is Workbench; these pages are generated - do not edit by hand." \
+            || echo "PR may already exist for ${BRANCH}"
