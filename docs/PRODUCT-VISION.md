@@ -30,10 +30,10 @@ grounded in real, measured furniture rather than abstract dimensions.
 
 The generation model is layered. Everything starts with a grid.
 
-1. **Grids (baseplates)** — the foundation. You enter a *measured* drawer/space;
+1. **Grids (baseplates)** — the foundation. You enter a _measured_ drawer/space;
    Benchfinity fits whole Gridfinity-compatible cells into it, centers the grid
    with even perimeter padding, and auto-splits the result to fit your printer
-   bed. *This exists today in the V1 POC* (`src/geometry`, `src/export`).
+   bed. _This exists today in the V1 POC_ (`src/geometry`, `src/export`).
 2. **Bins** — sit on grids. This is an **open-ended, ever-growing family of
    typed generators**, not a fixed feature set:
    - open bins, storage boxes,
@@ -45,6 +45,7 @@ The generation model is layered. Everything starts with a grid.
    the product's core value** — so a bin type is effectively a plugin: a
    self-contained generator with its own parameters, geometry, and preview, all
    emitting a Gridfinity-compatible footprint so it drops onto any grid.
+
 3. **Stand-alone boxes** — Modibox-style modular boxes that **interoperate** with
    grids and bins but are not grid-bound. A parallel part track under the same
    compatibility contract.
@@ -76,7 +77,7 @@ Account
 - **Container/grid reuse** — define a drawer's dimensions + grid once and stamp it
   across N identical drawers (the "12 identical drawers, different contents"
   case). The grid is shared; the contents are per-instance.
-- **Layout reuse** *(rich end-state)* — saved spatial arrangements of bins on a
+- **Layout reuse** _(rich end-state)_ — saved spatial arrangements of bins on a
   grid, remembered per container instance.
 
 ## Experience and outputs
@@ -98,7 +99,7 @@ Account
   option) — to be decided at the platform layer.
 - **Pure core preserved (issue #5):** the V1 geometry/validation/export core stays
   free of React, DOM, and storage. Each generator (grid, each bin type, stand-alone
-  box) is a pure module wrapped behind persistence — we *wrap*, never *rewrite* the
+  box) is a pure module wrapped behind persistence — we _wrap_, never _rewrite_ the
   math. This is also what makes the bin-plugin model and future community
   contribution possible.
 - **License:** AGPL-3.0 everywhere.

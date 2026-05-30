@@ -9,7 +9,7 @@ This is the authoritative phase plan for Benchfinity. It supersedes the older si
 - **Continuous delivery / ship small to prod.** Every increment is independently shippable. Small changes land in production continuously rather than in big-bang releases.
 - **Launch then build.** Increment 0 puts the existing V1 grid generator live first; product depth is added against a running, public app.
 - **Pure core preserved (issue #5).** The V1 generator core (`src/geometry/*`, `src/validation.ts`, `src/export/*`) plus `src/design.ts`/`src/geometry/types.ts` stay pure (no React/DOM/storage) and are **wrapped, never rewritten**. Persistence stores `PlateInput` + `selectedPrinterId` + `schemaVersion` (`BaseplateDesign`) and a JSON-safe projection of the derived `PlateLayout`; Three.js meshes are never persisted — they are recomputed on load.
-- **Two parallel tracks.** A *backbone* track (logged-in, **A → B**: backend + Postgres + auth/RBAC + app shell, then the persisted/reusable grid) runs in parallel with a *generators* track (anonymous, client-side, **C**: the bin plugin family and stand-alone boxes shipping straight to the live anonymous app). The two tracks are decoupled by the auth gate, so anonymous generate → preview → export keeps working unchanged throughout.
+- **Two parallel tracks.** A _backbone_ track (logged-in, **A → B**: backend + Postgres + auth/RBAC + app shell, then the persisted/reusable grid) runs in parallel with a _generators_ track (anonymous, client-side, **C**: the bin plugin family and stand-alone boxes shipping straight to the live anonymous app). The two tracks are decoupled by the auth gate, so anonymous generate → preview → export keeps working unchanged throughout.
 
 ## Phase flow (two-track parallelism)
 
@@ -65,7 +65,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Document that the image is **PUBLIC** (verified anon pull of `ghcr.io/benchfinity/workbench:develop` returns 200) — **no imagePullSecret**; do not copy kof22's private-registry assumptions.
   - Keep all OCI references lowercase (`ghcr.io/benchfinity/...`) despite the `BenchFinity/Workbench` GitHub casing.
 - **Dependencies:** none.
-- **Maps to issues:** Increment 0 (Launch) — new issue *"Increment 0: Create Benchfinity-CD GitOps repo (ArgoCD + Kustomize)"*.
+- **Maps to issues:** Increment 0 (Launch) — new issue _"Increment 0: Create Benchfinity-CD GitOps repo (ArgoCD + Kustomize)"_.
 
 ### 0.2 — Wire the ArgoCD Application to sync the published chart into the cluster
 
@@ -78,7 +78,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Override `frontend.image.tag` in the overlay (chart appVersion is decoupled from the image tag).
   - Apply and confirm Healthy/Synced; `kubectl get pods -n benchfinity` shows the frontend Running (no pull secret).
 - **Dependencies:** 0.1.
-- **Maps to issues:** Increment 0 (Launch) — new issue *"Increment 0: Deploy V1 grid generator to production"*.
+- **Maps to issues:** Increment 0 (Launch) — new issue _"Increment 0: Deploy V1 grid generator to production"_.
 
 ### 0.3 — Configure Traefik ingress + TLS + static-IP exposure for benchfinity.com
 
@@ -130,7 +130,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Add a Java 21 Dockerfile producing `workbench-api` (separate from the frontend distroless nginx Dockerfile).
   - Add a Maven build + minimal backend CI job so the HIGH+ security gates and PR checks extend to the Java module.
 - **Dependencies:** none (within Phase A).
-- **Maps to issues:** #1 (rewritten → *"Phase A: Confirm QQQ backend repo, app shape, and local dev run"*).
+- **Maps to issues:** #1 (rewritten → _"Phase A: Confirm QQQ backend repo, app shape, and local dev run"_).
 
 ### A2 — Postgres persistence schema grounded in the confirmed hierarchy
 
@@ -157,7 +157,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Stand up the anonymous public path on `FullyAnonymousAuthenticationModule` (read-only / no persistence), distinct from authenticated sharing.
   - Tests proving account scoping (user in account A cannot read/write account B's data).
 - **Dependencies:** A1, A2.
-- **Maps to issues:** #2 — new issue *"Phase A: Decide auth/account provider (Authentik vs embedded)"*.
+- **Maps to issues:** #2 — new issue _"Phase A: Decide auth/account provider (Authentik vs embedded)"_.
 
 ### A4 — Signed-in React app shell calling the QQQ REST API
 
@@ -274,7 +274,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Reference test-only stub plugin (flat NxM pad) to prove registry + footprint + export + 3mf end-to-end.
   - Tests: footprint corner radius == `socketCornerRadiusMm`, base profile heights sum to 4.95mm, magnet constants, registry round-trip, stub feeds `serializeBinaryStl` + `createThreeMfPackageFromParts` with non-empty triangles. Raises the baseline.
 - **Dependencies:** none.
-- **Maps to issues:** #5 (preserve/wrap pure core); Workbench VNext milestone → new issue *"Phase C: Bin plugin engine (typed generator framework)"*.
+- **Maps to issues:** #5 (preserve/wrap pure core); Workbench VNext milestone → new issue _"Phase C: Bin plugin engine (typed generator framework)"_.
 
 ### C2 — First bin types: open bin + storage box (validate the contract with real geometry + UI)
 
@@ -287,9 +287,9 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Generalize `design.ts` `BaseplateDesign` → `WorkbenchItem` union; baseplate stays as-is.
   - `src/components/BinControls.tsx` + a generic `SchemaForm` rendering `paramSchema` fields — presentational only, mirroring `PlateControls`; `App.tsx` gains an item-type switch routing preview/export through registry-produced `GeometryPart[]`.
   - Wire bin models into the existing `PlatePreview`-style rendering and `createExportBlob` (STL single, ZIP split if over bed, 3MF via `createThreeMfPackageFromParts`).
-  - Tests: compartment count == divX*divY, scoop fillet present, lip dims match `GRIDFINITY_BIN_PROFILE`, Lite mode has zero magnet holes + correct wall thickness, both footprints socket-compatible, both export non-empty STL + valid 3MF, `WorkbenchItem` round-trips.
+  - Tests: compartment count == divX\*divY, scoop fillet present, lip dims match `GRIDFINITY_BIN_PROFILE`, Lite mode has zero magnet holes + correct wall thickness, both footprints socket-compatible, both export non-empty STL + valid 3MF, `WorkbenchItem` round-trips.
 - **Dependencies:** C1.
-- **Maps to issues:** #5 (wrap not rewrite; generalize `design.ts`); Workbench VNext milestone → new issue *"Phase C: First bin types (open bin, storage box, tool-traced)"*.
+- **Maps to issues:** #5 (wrap not rewrite; generalize `design.ts`); Workbench VNext milestone → new issue _"Phase C: First bin types (open bin, storage box, tool-traced)"_.
 
 ### C3 — Ongoing bin-type stream: tool-traced / photo-trace, specialty (HO-train), socket/wrench systems
 
@@ -316,7 +316,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Surface standalone boxes in the same item-type selector; reuse `SchemaForm` + preview + export.
   - Tests: coupling-profile constants asserted, optional grid-foot adapter produces a socket-compatible footprint when enabled (interoperability proof), box exports non-empty STL/3MF, contract-conformance meta-test still passes.
 - **Dependencies:** C1, C2.
-- **Maps to issues:** Workbench VNext milestone → new issue *"Phase C: Stand-alone boxes (Modibox-style, non-grid-bound)"*.
+- **Maps to issues:** Workbench VNext milestone → new issue _"Phase C: Stand-alone boxes (Modibox-style, non-grid-bound)"_.
 
 ---
 
@@ -333,7 +333,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Wire System → ContainerType → ContainerInstance composition end-to-end in the signed-in shell over the Phase B schema.
   - Reuse a saved part across containers; surface the reuse axes in the UI.
 - **Dependencies:** Phase A spine + Phase B persisted grid (and Phase C catalog for parts).
-- **Maps to issues:** new issue *"Phase D: Composition — systems, container types, and instances"*.
+- **Maps to issues:** new issue _"Phase D: Composition — systems, container types, and instances"_.
 
 ### D2 — Visual layout and placement of bins on grids
 
@@ -343,7 +343,7 @@ Increment 0 unblocks both tracks. The backbone (A → B) and the generators trac
   - Drag/place bins on a grid in 3D; persist the arrangement per ContainerInstance and restore it on load.
   - Persist layout as data (never meshes), consistent with #5.
 - **Dependencies:** D1 (and the Phase C bin catalog).
-- **Maps to issues:** new issue *"Phase D: Visual layout and placement of bins on grids"*.
+- **Maps to issues:** new issue _"Phase D: Visual layout and placement of bins on grids"_.
 
 ---
 
@@ -355,52 +355,52 @@ This roadmap restructures the existing issues, milestones, and board to match th
 
 **Keep (re-milestone only):**
 
-| Issue | Title | New phase | Rationale |
-|---|---|---|---|
-| #5 | Preserve V1 generator as first Workbench item type | Phase B | The #5 hard constraint; literally the definition of Phase B. Anchors B. |
-| #4 | Build signed-in Workbench app shell | Phase A | App shell is explicitly part of the Phase A QQQ spine. Minor vocabulary alignment to System/Container only. |
-| #8 | Add Workbench backend and frontend test coverage | Phase B | Tests are an explicit Phase B deliverable; covers scoping, CRUD, save/load, export history, and the preserved geometry/export regression suite (34 baseline). |
+| Issue | Title                                              | New phase | Rationale                                                                                                                                                     |
+| ----- | -------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #5    | Preserve V1 generator as first Workbench item type | Phase B   | The #5 hard constraint; literally the definition of Phase B. Anchors B.                                                                                       |
+| #4    | Build signed-in Workbench app shell                | Phase A   | App shell is explicitly part of the Phase A QQQ spine. Minor vocabulary alignment to System/Container only.                                                   |
+| #8    | Add Workbench backend and frontend test coverage   | Phase B   | Tests are an explicit Phase B deliverable; covers scoping, CRUD, save/load, export history, and the preserved geometry/export regression suite (34 baseline). |
 
 **Rewrite (re-scope + re-milestone + relabel):**
 
-| Issue | Change |
-|---|---|
-| #1 | Retitle to *"Phase A: Confirm QQQ backend repo, app shape, and local dev run."* Scope to backend-in-repo vs sibling repo, the local dev run shape (frontend + QQQ + Postgres), and the first implementation slice. **Remove** deployment/CD concerns (now the two new Increment 0 issues). Auth-provider choice split out to its own new Phase A issue. Milestone Workbench VNext → Phase A; `phase:1` → `phase:A`. |
-| #2 | Expand *"Define Workbench persistence model"* beyond the old account/project/item sketch to the confirmed `Account → System → ContainerType → ContainerInstance → Inserts` hierarchy + membership/RBAC scoping. Stays Phase A (the spine's schema); bin-type/layout tables detailed in C/D. Persist `PlateInput` + derived `PlateLayout` (#5), never meshes. `phase:1` → `phase:A`. |
-| #3 | Move *"Decide export artifact storage"* from `phase:1` → **Phase B** (export history is a Phase B deliverable). Keep the decision scope + metadata fields; frame as a prerequisite for #7. Milestone → Phase B; `phase:1` → `phase:B`. |
-| #6 | Re-scope *"Persist baseplate design inputs and derived metadata"* to Phase B and align vocabulary: a saved grid design is the reusable grid attached to a `ContainerType`. Persist `PlateInput` + derived `PlateLayout`; never persist meshes. Keep optimistic concurrency. `phase:2` → `phase:B`; milestone → Phase B. |
-| #7 | Move *"Add export history and download actions"* from `phase:3` → **Phase B**. Keep scope (record type/version/filename/content-type/size/storage-key/input-hash/summary; show whether the latest export matches current input; download actions). Depends on the #3 storage decision. `phase:3` → `phase:B`; milestone → Phase B. |
+| Issue | Change                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #1    | Retitle to _"Phase A: Confirm QQQ backend repo, app shape, and local dev run."_ Scope to backend-in-repo vs sibling repo, the local dev run shape (frontend + QQQ + Postgres), and the first implementation slice. **Remove** deployment/CD concerns (now the two new Increment 0 issues). Auth-provider choice split out to its own new Phase A issue. Milestone Workbench VNext → Phase A; `phase:1` → `phase:A`. |
+| #2    | Expand _"Define Workbench persistence model"_ beyond the old account/project/item sketch to the confirmed `Account → System → ContainerType → ContainerInstance → Inserts` hierarchy + membership/RBAC scoping. Stays Phase A (the spine's schema); bin-type/layout tables detailed in C/D. Persist `PlateInput` + derived `PlateLayout` (#5), never meshes. `phase:1` → `phase:A`.                                 |
+| #3    | Move _"Decide export artifact storage"_ from `phase:1` → **Phase B** (export history is a Phase B deliverable). Keep the decision scope + metadata fields; frame as a prerequisite for #7. Milestone → Phase B; `phase:1` → `phase:B`.                                                                                                                                                                              |
+| #6    | Re-scope _"Persist baseplate design inputs and derived metadata"_ to Phase B and align vocabulary: a saved grid design is the reusable grid attached to a `ContainerType`. Persist `PlateInput` + derived `PlateLayout`; never persist meshes. Keep optimistic concurrency. `phase:2` → `phase:B`; milestone → Phase B.                                                                                             |
+| #7    | Move _"Add export history and download actions"_ from `phase:3` → **Phase B**. Keep scope (record type/version/filename/content-type/size/storage-key/input-hash/summary; show whether the latest export matches current input; download actions). Depends on the #3 storage decision. `phase:3` → `phase:B`; milestone → Phase B.                                                                                  |
 
 **Close (no action beyond confirming it stays closed):**
 
-| Issue | Why |
-|---|---|
-| #9 | Already closed and shipped (Repository Foundation: public repo metadata, Docker packaging, CI, GHCR images, releases). Its GHCR/QRun-style tagging output is the input to the two new Increment 0 deploy issues — it is the lineage root of Increment 0 but requires no reopen. |
+| Issue | Why                                                                                                                                                                                                                                                                             |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #9    | Already closed and shipped (Repository Foundation: public repo metadata, Docker packaging, CI, GHCR images, releases). Its GHCR/QRun-style tagging output is the input to the two new Increment 0 deploy issues — it is the lineage root of Increment 0 but requires no reopen. |
 
 **Create (8 new issues):**
 
-| Title | Phase | Labels |
-|---|---|---|
-| Increment 0: Deploy V1 grid generator to production | Increment 0 | roadmap, ci, docker, deployment |
-| Increment 0: Create Benchfinity-CD GitOps repo (ArgoCD + Kustomize) | Increment 0 | roadmap, deployment, decision |
-| Phase A: Decide auth/account provider (Authentik vs embedded) | Phase A | roadmap, decision, backend |
-| Phase C: Bin plugin engine (typed generator framework) | Phase C | roadmap, frontend, enhancement, plugin |
-| Phase C: First bin types (open bin, storage box, tool-traced) | Phase C | roadmap, frontend, enhancement, plugin |
-| Phase C: Stand-alone boxes (Modibox-style, non-grid-bound) | Phase C | roadmap, frontend, enhancement, plugin |
-| Phase D: Composition — systems, container types, and instances | Phase D | roadmap, backend, frontend, enhancement |
-| Phase D: Visual layout and placement of bins on grids | Phase D | roadmap, frontend, enhancement |
+| Title                                                               | Phase       | Labels                                  |
+| ------------------------------------------------------------------- | ----------- | --------------------------------------- |
+| Increment 0: Deploy V1 grid generator to production                 | Increment 0 | roadmap, ci, docker, deployment         |
+| Increment 0: Create Benchfinity-CD GitOps repo (ArgoCD + Kustomize) | Increment 0 | roadmap, deployment, decision           |
+| Phase A: Decide auth/account provider (Authentik vs embedded)       | Phase A     | roadmap, decision, backend              |
+| Phase C: Bin plugin engine (typed generator framework)              | Phase C     | roadmap, frontend, enhancement, plugin  |
+| Phase C: First bin types (open bin, storage box, tool-traced)       | Phase C     | roadmap, frontend, enhancement, plugin  |
+| Phase C: Stand-alone boxes (Modibox-style, non-grid-bound)          | Phase C     | roadmap, frontend, enhancement, plugin  |
+| Phase D: Composition — systems, container types, and instances      | Phase D     | roadmap, backend, frontend, enhancement |
+| Phase D: Visual layout and placement of bins on grids               | Phase D     | roadmap, frontend, enhancement          |
 
 ### Milestone restructure
 
-| Milestone | Action |
-|---|---|
-| Workbench VNext | **Retire.** It conflated `phase:1/2/3` persistence into one bucket; the work redistributes across Increment 0 / Phase A / Phase B (and the new Phase C/D issues). Close after re-milestoning #1–#8. |
-| Increment 0: Launch (V1 grid live) | **Create.** Goal: anonymous V1 grid deployed to prod via the new `benchfinity-cd` GitOps repo. Holds the two new Increment 0 issues. Lineage: builds on closed #9. |
-| Phase A: QQQ spine | **Create.** Goal: backend + Postgres + auth/RBAC + signed-in app shell. Holds rewritten #1, rewritten #2, #4, and the new auth-provider decision issue. |
-| Phase B: Grid persisted & reusable | **Create.** Goal: wrap the pure core (#5) behind persistence, save/restore grid designs, export history, tests. Holds #5, rewritten #6, rewritten #3, rewritten #7, #8. |
-| Phase C: Bin plugin engine + bin types + standalone boxes | **Create.** Goal: the generator family shipping to the live anonymous app in parallel with A → B. Holds the three new Phase C issues. |
-| Phase D: Composition & visual layout | **Create.** Goal: the rich logged-in end-state. Holds the two new Phase D issues. |
-| Repository Foundation | **Keep closed/complete.** Satisfied by #9. No changes. |
+| Milestone                                                 | Action                                                                                                                                                                                              |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Workbench VNext                                           | **Retire.** It conflated `phase:1/2/3` persistence into one bucket; the work redistributes across Increment 0 / Phase A / Phase B (and the new Phase C/D issues). Close after re-milestoning #1–#8. |
+| Increment 0: Launch (V1 grid live)                        | **Create.** Goal: anonymous V1 grid deployed to prod via the new `benchfinity-cd` GitOps repo. Holds the two new Increment 0 issues. Lineage: builds on closed #9.                                  |
+| Phase A: QQQ spine                                        | **Create.** Goal: backend + Postgres + auth/RBAC + signed-in app shell. Holds rewritten #1, rewritten #2, #4, and the new auth-provider decision issue.                                             |
+| Phase B: Grid persisted & reusable                        | **Create.** Goal: wrap the pure core (#5) behind persistence, save/restore grid designs, export history, tests. Holds #5, rewritten #6, rewritten #3, rewritten #7, #8.                             |
+| Phase C: Bin plugin engine + bin types + standalone boxes | **Create.** Goal: the generator family shipping to the live anonymous app in parallel with A → B. Holds the three new Phase C issues.                                                               |
+| Phase D: Composition & visual layout                      | **Create.** Goal: the rich logged-in end-state. Holds the two new Phase D issues.                                                                                                                   |
+| Repository Foundation                                     | **Keep closed/complete.** Satisfied by #9. No changes.                                                                                                                                              |
 
 ### Project board restructure
 

@@ -35,20 +35,20 @@ deploy the existing V1 grid generator live to `benchfinity.com`.
 
 ## Active Branches
 
-| Branch | Status |
-| --- | --- |
-| `develop` | default; CI green; action bumps + public packages landed |
+| Branch                               | Status                                                          |
+| ------------------------------------ | --------------------------------------------------------------- |
+| `develop`                            | default; CI green; action bumps + public packages landed        |
 | `feature/product-vision-and-roadmap` | PRODUCT-VISION + ROADMAP + this refresh; PR open into `develop` |
-| `main` | protected; behind `develop` (gitflow); unreleased |
+| `main`                               | protected; behind `develop` (gitflow); unreleased               |
 
 ## Pending Work / Next Steps
 
 - [ ] Merge the planning-docs PR into `develop`.
 - [ ] **Sync the product vision/roadmap with the company operating system (`../brand/`).**
 - [ ] **Increment 0 (#29, #30):** create the `Benchfinity-CD` GitOps repo (ArgoCD +
-  Kustomize, templated on `Kof22/Website-CD`) wrapping the OCI chart; deploy the V1
-  grid generator live at `benchfinity.com` on the **dedicated static IP** (need the
-  IP from James), Traefik + cert-manager `letsencrypt-prod`; then close the CD loop.
+      Kustomize, templated on `Kof22/Website-CD`) wrapping the OCI chart; deploy the V1
+      grid generator live at `benchfinity.com` on the **dedicated static IP** (need the
+      IP from James), Traefik + cert-manager `letsencrypt-prod`; then close the CD loop.
 - [ ] Phase A backlog (#1, #2, #4, #31) when starting the QQQ spine.
 
 ## Key Reference
