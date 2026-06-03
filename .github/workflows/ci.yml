@@ -289,11 +289,26 @@ jobs:
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           helm package deploy/helm/benchfinity \
             --version "${CHART_VERSION}" \
             --app-version "${CHART_VERSION}"
-          helm registry login ghcr.io -u "${REGISTRY_USER}" -p "${REGISTRY_TOKEN}"
-          helm push "benchfinity-${CHART_VERSION}.tgz" oci://ghcr.io/benchfinity/charts
+
+          # Retry login+push: ghcr.io DNS/network is intermittently flaky on
+          # runners ("dial tcp: lookup ghcr.io ... i/o timeout"). Use
+          # --password-stdin (CLI -p is insecure and warned).
+          for attempt in 1 2 3; do
+            if printf '%s' "${REGISTRY_TOKEN}" \
+                 | helm registry login ghcr.io -u "${REGISTRY_USER}" --password-stdin \
+               && helm push "benchfinity-${CHART_VERSION}.tgz" oci://ghcr.io/benchfinity/charts; then
+              echo "Chart pushed on attempt ${attempt}."
+              exit 0
+            fi
+            echo "helm publish attempt ${attempt} failed; retrying in $((attempt * 10))s..."
+            sleep $((attempt * 10))
+          done
+          echo "::error::helm chart publish failed after 3 attempts."
+          exit 1
 
   deploy:
     name: deploy
