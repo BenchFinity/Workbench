@@ -118,6 +118,7 @@ jobs:
       version: ${{ steps.meta.outputs.version }}
       release_tag: ${{ steps.meta.outputs.release_tag }}
       release_name: ${{ steps.meta.outputs.release_name }}
+      deploy_tag: ${{ steps.meta.outputs.deploy_tag }}
       prerelease: ${{ steps.meta.outputs.prerelease }}
     steps:
       - name: Checkout
@@ -138,10 +139,14 @@ jobs:
           branch="${GITHUB_REF_NAME}"
           release_tag=""
           release_name=""
+          deploy_tag=""
           prerelease="false"
 
           if [[ "${branch}" == "main" ]]; then
-            tags="${image}:${version}"
+            # Publish an immutable :<version>-<sha> that production pins to,
+            # so every release changes CD desired state and ArgoCD rolls it out.
+            tags="${image}:${version}"$'\n'"${image}:${version}-${short_sha}"
+            deploy_tag="${version}-${short_sha}"
             release_tag="v${version}"
             release_name="Benchfinity v${version}"
           elif [[ "${branch}" == "develop" ]]; then
@@ -164,6 +169,7 @@ jobs:
             echo "version=${version}"
             echo "release_tag=${release_tag}"
             echo "release_name=${release_name}"
+            echo "deploy_tag=${deploy_tag}"
             echo "prerelease=${prerelease}"
             echo "tags<<TAGS"
             printf '%s\n' "${tags}"
@@ -288,3 +294,61 @@ jobs:
             --app-version "${CHART_VERSION}"
           helm registry login ghcr.io -u "${REGISTRY_USER}" -p "${REGISTRY_TOKEN}"
           helm push "benchfinity-${CHART_VERSION}.tgz" oci://ghcr.io/benchfinity/charts
+
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    needs: docker
+    # Only production (main) auto-deploys, once the immutable image is published.
+    # Bumps the pinned tag in Workbench-CD; ArgoCD (benchfinity-prod) reconciles
+    # it onto k8s-prod. Uses the SSH deploy key, not GITHUB_TOKEN.
+    if: github.event_name == 'push' && needs.docker.outputs.deploy_tag != ''
+    permissions:
+      contents: read
+    steps:
+      - name: Roll production by bumping Workbench-CD image tag
+        env:
+          DEPLOY_TAG: ${{ needs.docker.outputs.deploy_tag }}
+          DEPLOY_KEY: ${{ secrets.WORKBENCH_CD_DEPLOY_KEY }}
+          SOURCE_SHA: ${{ github.sha }}
+          CD_REPO: BenchFinity/Workbench-CD
+          CD_BRANCH: main
+          OVERLAY: overlays/production/kustomization.yaml
+          IMAGE_NAME: ghcr.io/benchfinity/workbench
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${DEPLOY_KEY}" ]]; then
+            echo "::error::WORKBENCH_CD_DEPLOY_KEY secret is not set; cannot push to ${CD_REPO}." \
+                 "Add a write deploy key to ${CD_REPO} and store its private key as that secret."
+            exit 1
+          fi
+
+          mkdir -p ~/.ssh
+          printf '%s\n' "${DEPLOY_KEY}" > ~/.ssh/cd_deploy_key
+          chmod 600 ~/.ssh/cd_deploy_key
+          ssh-keyscan -t ed25519,rsa github.com >> ~/.ssh/known_hosts 2>/dev/null
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/cd_deploy_key -o IdentitiesOnly=yes"
+
+          git clone --depth 1 --branch "${CD_BRANCH}" "git@github.com:${CD_REPO}.git" cd-repo
+          cd cd-repo
+
+          # DEPLOY_TAG and IMAGE_NAME are CI-derived (package.json version + commit
+          # SHA), not user-controlled input, so they are safe to pass to yq via env.
+          DEPLOY_TAG="${DEPLOY_TAG}" IMAGE_NAME="${IMAGE_NAME}" yq -i \
+            '(.images[] | select(.name == strenv(IMAGE_NAME)) | .newTag) = strenv(DEPLOY_TAG)' \
+            "${OVERLAY}"
+
+          if git diff --quiet -- "${OVERLAY}"; then
+            echo "Production already pinned to ${DEPLOY_TAG}; nothing to deploy."
+            exit 0
+          fi
+
+          git config user.name "benchfinity-workbench-ci[bot]"
+          git config user.email "ci@benchfinity.com"
+          git add "${OVERLAY}"
+          git commit -m "deploy(workbench): roll production to ${DEPLOY_TAG}" \
+                     -m "Auto-bumped by Workbench CI from BenchFinity/Workbench@${SOURCE_SHA}. ArgoCD reconciles."
+          git push origin "HEAD:${CD_BRANCH}"
+          echo "Pushed ${DEPLOY_TAG} to ${CD_REPO}@${CD_BRANCH}; ArgoCD will roll it out."
