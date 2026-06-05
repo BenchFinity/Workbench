@@ -33,13 +33,13 @@
     "@react-three/fiber": "^9.4.0",
     "jszip": "^3.10.1",
     "lucide-react": "^1.17.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "three": "^0.184.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/react": "^19.0.2",
+    "@types/react": "^19.2.16",
     "@types/react-dom": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^10.4.0",
