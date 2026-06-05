@@ -1,14 +1,14 @@
 # glibc Node toolchain (Chainguard node:latest-dev: npm + shell, glibc, nonroot
 # uid 65532). Matches ADR 0001; replaces node:22-alpine (musl). Provides Node >=22
 # (currently 26.x) per package.json engines. Digest-pinned; refresh via Dependabot.
-FROM cgr.dev/chainguard/node:latest-dev@sha256:5f539ca9ce7ed8b858059b3316640232bcb1ae7d3513ae67bb95527533bf1fba AS deps
+FROM cgr.dev/chainguard/node:latest-dev@sha256:6a2f933ba154d90d2a0c175e292242d060d0ce82303c4b9fc27bc296b258d620 AS deps
 # /app is the image's default WORKDIR and is owned/writable by the nonroot user.
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
 
-FROM cgr.dev/chainguard/node:latest-dev@sha256:5f539ca9ce7ed8b858059b3316640232bcb1ae7d3513ae67bb95527533bf1fba AS builder
+FROM cgr.dev/chainguard/node:latest-dev@sha256:6a2f933ba154d90d2a0c175e292242d060d0ce82303c4b9fc27bc296b258d620 AS builder
 WORKDIR /app
 
 # --chown so the nonroot build user can write into node_modules (tsc emits
@@ -22,7 +22,7 @@ RUN npm run build
 # manager, daily-rebuilt with near-zero CVEs. See docs/adr/0001-distroless-base-images.md.
 # Digest-pinned for reproducibility; refresh via Dependabot/Renovate or manually
 # (docker buildx imagetools inspect cgr.dev/chainguard/nginx:latest).
-FROM cgr.dev/chainguard/nginx:latest@sha256:71093c1127c31422838904b00b32287bd2bf58cd06e0abc3c85d96597d46a448
+FROM cgr.dev/chainguard/nginx:latest@sha256:bfc999927013bd5d015c496342bd8fc1b43a94e740b61af1fa55734f66e94947
 
 # Chainguard nginx mirrors the stock layout: nginx.conf includes
 # /etc/nginx/conf.d/*.conf, listens on 8080, and serves /usr/share/nginx/html.
